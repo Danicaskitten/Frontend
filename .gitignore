@@ -14,3 +14,5 @@ www/
 
 # ignore platforms
 platforms/
+
+#ignore compiled tags
