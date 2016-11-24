@@ -16,3 +16,4 @@ www/
 platforms/
 
 #ignore compiled tags
+src/compiledTags.ts
