@@ -1,0 +1,156 @@
+@import 'variables.less';
+navigation{
+        .fa-film{
+            padding: 10px;
+            border-radius: 50px;
+            background: @dark-pink !important;
+            color:@bright-pink !important;
+                font-size: 25px;
+        }
+            display: block;
+            width: 100%;
+            height: 60px;
+            background-color: @navigation-background;
+             color: #EEE !important;
+    
+      div{
+                position: fixed;
+                bottom: 0px;
+                right: 0px;
+                margin: 20px;
+                font-size: 30px;
+                padding: 10px;
+                width: 30px;
+                height: 30px;
+                border-radius: 50%;
+                background: #B05F6D !important;
+                cursor: pointer;
+            }
+            h3 {
+                    display: inline-block;
+                    left: 20px;
+                    top: 2px;
+                    position: relative;
+                    font-size: 27px;
+                    margin: 5px;
+            }
+            .active{
+                background-color:  #B05F6D !important;
+            }
+             i  {
+                 font-family:FontAwesome !important;
+                 color: #EEE !important;
+            }
+            
+           
+           
+            
+            ul{
+                list-style-type: none;
+                padding: 0;
+                position: absolute;
+                left:0;
+                padding-top:27px;
+                top: 33px;
+                z-index: 100;
+                width: 20%;
+                margin: 0;
+                min-width: 250px;
+                height:~"calc(100vh - 60px)";
+                .hover-color:hover {
+                    color: #B05F6D;
+                }
+                li{
+                    display: block;
+                    padding-top: 15px;
+                    padding-bottom: 15px;
+                   
+                   
+                    color: #EEE;
+                    a{
+                            color: inherit;
+                            text-decoration: none;
+                            font-size: 15px;
+                            font-weight: 300;
+                            top: -2px;
+                            padding-left: 20px;
+                            position: relative;
+                       i{
+                            font-size: 30px !important;
+                            margin-right: 10px;
+                            top: 4px;
+                            position: relative;
+                       }
+                    }
+                }
+
+                .user-profile{
+                            vertical-align: middle;
+                            font-size: 20px;
+                            text-align: center;
+                            align-content: center;
+                            margin: 10px;
+                            padding-bottom: 0;
+                            position: relative;
+                            top: -28px;
+                             width: ~"calc(100% - 20px)";
+                             div{
+                                     position: relative;
+                                    left: auto;
+                                    right: auto;
+                                    padding: 0;
+                                    width: 80px;
+                                    margin: auto;
+                                    height: 80px;
+                                    margin-bottom: 10px;
+                                    background: transparent;
+                                    border: none;
+                                    background: transparent !important;
+                             }
+                        img{
+                               width: 80px;
+                                margin-left: auto;
+                                margin-right: auto;
+                                margin-bottom: 10px;
+                                border-radius: 50%;
+                                border: 2px solid #B05F6D;
+                        }
+                        a{
+                            padding-left: 0;
+                            padding-bottom: 10px;
+                        }
+                        *{
+                                display: block;
+                        }
+                }
+
+            }
+           
+            *{
+                background: inherit !important;
+                color:inherit !important;
+            }
+            .menu-icon{
+                   padding: 10px;
+                    position: relative;
+                    top: 2px;
+                    margin-right: 10px;
+                    left: 20px;
+                    font-size: 25px;
+            }
+            .second-menu{
+                
+                    float:right;
+                top: -36px;
+                position: relative;
+                font-size: 25px;
+                margin-right: 10px;
+            }
+            
+            .fa-comments-o:before{
+                position: relative;
+                top: -2px;
+
+            }
+
+}

@@ -1,0 +1,44 @@
+{
+  "name": "MovieBot",
+  "version": "1.0.0",
+  "description": "A cross-platform mobile application created for the DSD course.",
+  "main": "gulpfile.js",
+  "scripts": {
+    "start": "npm run gulp-build",
+    "watch": "gulp watch",
+    "gulp-build":"gulp build"
+  }, 
+  "keywords": ["Cordova", "Bot framework", "cross-platform","corky","flux"],
+  "author": "Movie Bot frontend team",
+  "devDependencies": {
+    "browser-sync": "^2.13.0",
+    "browserify": "^13.0.1",
+    "concurrently": "^2.2.0",
+    "del": "^2.2.1",
+    "envify": "^3.4.1",
+    "gulp": "3.9.1",
+    "gulp-concat": "2.6.0",
+    "gulp-less": "3.1.0",
+    "gulp-minify-css": "1.2.4",
+    "gulp-notify": "2.2.0",
+    "gulp-rename": "1.2.2",
+    "gulp-strip-css-comments": "1.2.0",
+    "gulp-uglify": "1.5.3",
+    "gulp-util": "^3.0.7",
+    "jsesc": "^2.2.0",
+    "json-server": "^0.8.16",
+    "path": "^0.12.7",
+    "riot": "^2.5.0",
+    "run-sequence": "^1.2.2",
+    "through2": "^2.0.1",
+    "tsify": "^1.0.1",
+    "typescript": "^1.8.10",
+    "vinyl": "^1.1.1",
+    "vinyl-buffer": "^1.0.0",
+    "vinyl-source-stream": "^1.1.0",
+    "watchify": "^3.7.0"
+  },
+  "dependencies": {
+    "corky": "0.0.13"
+  }
+}

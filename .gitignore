@@ -1,0 +1,16 @@
+# git ignore file for the MovieBot frontend
+
+# ignore plugins
+plugins/
+
+# ignore node_modules
+node_modules/
+
+#ignore hooks
+hooks/
+
+# ignore compiled code
+www/
+
+# ignore platforms
+platforms/
