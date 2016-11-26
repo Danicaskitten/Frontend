@@ -4,6 +4,7 @@
      div{
                         background:@user-chat-background !important;
                         color: @chat-text-color;
+                        margin-left: auto;
                 }
 }
 chat-view{
@@ -51,7 +52,7 @@ chat-view{
         }
 }
  chat-reply{
-         display: table;
+         display: flex;
          padding: 10px;
          max-width: ~"calc(100% - 20px)";
          border-radius: 5px;
@@ -67,7 +68,8 @@ chat-view{
                         border-radius: 6px;
         }
         .right {
-                float:right;              
+                float:right;  
+                         
         }
                 h4, i{
                         background: inherit !important;
