@@ -4,12 +4,14 @@ import { Route } from 'corky/routing/route'
 import { AppContainer} from './element/appContainer';
 import { appReducer, goToView, PageActive } from './ducks/appDuck';
 import {chatReducer} from './ducks/chatDuck';
+import {dashboardReducer, dashboardInit} from './ducks/dashboardDuck';
 import IModel from './model';
 
 export var app = new App<IModel>(
     {
         app: appReducer,
-        chat: chatReducer
+        chat: chatReducer,
+        dashboard: dashboardReducer
     });
 
 app.setRouter([
@@ -17,6 +19,8 @@ app.setRouter([
         address: "/dashboard",
         on: () => {
             app.dispatch(goToView.payload({ view: PageActive.Dashboard }));
+            app.dispatch(dashboardInit.payload({query:{q: "avengers"}}));
+            //app.dispatch(getImageFromImdb.payload({ query:{template : {id: "tt0848228"}}}));
         }
     }),
     new Route({

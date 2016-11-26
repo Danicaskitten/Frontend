@@ -24,5 +24,4 @@ export abstract class ChatReply extends Element {
             chatElement.scrollTop = chatElement.scrollHeight;
         }.bind(this));
     }
-         
 }
