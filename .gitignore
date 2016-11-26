@@ -17,3 +17,6 @@ platforms/
 
 #ignore compiled tags
 src/compiledTags.ts
+
+#ignore config file 
+src/config.ts
