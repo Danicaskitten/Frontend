@@ -1,6 +1,6 @@
 import { Service } from 'corky/flux/service';
 import {IModel} from '../model';
-import {ISuggestion, dashboardInit} from '../ducks/dashboardDuck';
+import {ISuggestion} from '../ducks/dashboardDuck';
 
 export class DashboardService extends Service {
     selector = (state: IModel) => ({

@@ -4,7 +4,7 @@ import { Route } from 'corky/routing/route'
 import { AppContainer} from './element/appContainer';
 import { appReducer, goToView, PageActive } from './ducks/appDuck';
 import {chatReducer} from './ducks/chatDuck';
-import {dashboardReducer, dashboardInit} from './ducks/dashboardDuck';
+import {dashboardReducer, getImageFromImdb, getMovies} from './ducks/dashboardDuck';
 import IModel from './model';
 
 export var app = new App<IModel>(
@@ -19,8 +19,7 @@ app.setRouter([
         address: "/dashboard",
         on: () => {
             app.dispatch(goToView.payload({ view: PageActive.Dashboard }));
-            app.dispatch(dashboardInit.payload({query:{q: "avengers"}}));
-            //app.dispatch(getImageFromImdb.payload({ query:{template : {id: "tt0848228"}}}));
+            app.dispatch(getMovies.payload({ query: { title: "avengers" }}));
         }
     }),
     new Route({
