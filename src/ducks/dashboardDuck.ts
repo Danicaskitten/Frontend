@@ -140,7 +140,7 @@ export var dashboardReducer = new Flux.Reducer<IDashboardState>(
                         if(element.id == payl.ImdbId){
                             payl.Projections.forEach(proj => {
                                 var tAndL: ITimeAndLocation = {
-                                    location: payl.Cinema.City + ': ' + payl.Cinema.Name,
+                                    location: payl.Cinema.Name,
                                     time: proj.Date + ': ' + proj.Time
                                 }
                                 element.timeAndLocation.push(tAndL);
