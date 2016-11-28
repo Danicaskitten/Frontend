@@ -18,11 +18,7 @@ export abstract class ChatReply extends Element {
         this.time = opts.time;
         this.me = opts.me;
         
-        this.on('update', function(){
-            var chatElement = document.getElementsByTagName("chat")[0];
-            if(chatElement !== undefined)
-            chatElement.scrollTop = chatElement.scrollHeight;
-        }.bind(this));
+      
     }
          
 }
