@@ -19,6 +19,8 @@ dashboard{
             margin-bottom: 15px;
             height: auto;
             padding: 10px;
+            overflow: auto;
+            cursor: pointer;
     }
     .time-location{
         color: black;
@@ -32,19 +34,24 @@ dashboard{
     }
     .myButton{
         color: white;
-        background-color: darkslategrey;
+        background-color: @green;
         border-radius: 10px;
+        padding: 5px;
         border: 1px solid;
+        float: right;
+        top: -7px;
+        font-size: 21px;
+        position: relative;
     }
     .time{
         float: left;
         margin-left: 20px;
-        width: 100%;
+        width: ~"calc(100% - 20px)";
         text-align: left;
+        margin-top: 5px;
     }    
     .description{
-        float: right;
-            
+        float: right;            
         width: ~"calc(100% - 70px - 40px)";
         display: inline-block;
     }
