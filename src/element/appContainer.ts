@@ -6,6 +6,7 @@ import './chat';
 import './chatReply';
 import './chatView';
 import './searchView';
+import './searchResult';
 
 
 @template("app", appService)
