@@ -2,7 +2,7 @@ import App from 'corky/app'
 import { mountToDom } from 'corky/tags/mount';
 import { Route } from 'corky/routing/route'
 import { AppContainer} from './element/appContainer';
-import {searchReducer, searchMovieTitleDummy} from './ducks/searchDuck';
+import {searchReducer, searchMovieByTitle} from './ducks/searchDuck';
 import { appReducer, goToView, PageActive } from './ducks/appDuck';
 import {dashboardReducer, getImageFromImdb, getMovies} from './ducks/dashboardDuck';
 import {chatReducer,startConversation,getChatMessages} from './ducks/chatDuck';
@@ -55,7 +55,7 @@ app.setRouter([
                         clearInterval(timingInterval);
                     timingInterval = undefined;
                     app.dispatch(goToView.payload({ view: PageActive.Search }));
-                    app.dispatch(searchMovieTitleDummy.payload({text: decodeURI(q)}));
+                    app.dispatch(searchMovieByTitle.payload({query:{title: decodeURI(q)}}));
                 }
             }) 
         ]
