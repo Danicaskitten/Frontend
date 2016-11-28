@@ -19,7 +19,7 @@ app.setRouter([
         address: "/dashboard",
         on: () => {
             app.dispatch(goToView.payload({ view: PageActive.Dashboard }));
-            app.dispatch(getMovies.payload({ query: { title: "avengers" }}));
+            app.dispatch(getMovies.payload({}));
         }
     }),
     new Route({

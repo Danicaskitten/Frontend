@@ -13,17 +13,6 @@ export interface IImdbResult {
     image: string;
 }
 
-//dummy data
-var timeAndLoc: ITimeAndLocation = {
-    location: "Cinestar Zagreb",
-    time: ["4:30"],
-}
-
-var timeAndLoc2: ITimeAndLocation = {
-    location: "Rijeka",
-    time: ["6:30"],
-}
-
 var initialState: IDashboardState = {
     dashboard: {
         result: []
@@ -48,7 +37,7 @@ export interface ISuggestion {
 
 export interface ITimeAndLocation {
     location: string,
-    time: Array<string>,
+    time: string,
 }
 
 export interface ITimeAndLocationArrayResponse {
@@ -61,7 +50,7 @@ export interface ITimeAndLocationArrayResponse {
             Date: string;
             Time: string;
         }>,
-        ImdbID: string;
+        ImdbId: string;
     }>
 }
 
@@ -108,7 +97,7 @@ var imdbResponse: IImdbResponse = {
 }
 
 export const getImageFromImdb = new Flux.RequestAction<any, ImdbRe>("IMAGE_FROM_IMDB","http://imdb.wemakesites.net/api/tt0848228", "GET");
-export const getMovies = new Flux.RequestAction<{ query: { title: string } }, Array<IDashboardResponse>>("DASHBOARD_LIFE", "https://moviebot-rage.azurewebsites.net/api/v1/Search/Movie", "GET");
+export const getMovies = new Flux.RequestAction<any, Array<IDashboardResponse>>("DASHBOARD_LIFE", "https://moviebot-rage.azurewebsites.net/api/v1/Recommender/movies", "GET");
 export const getProjections = new Flux.RequestAction<{ query: {imdbid: string} }, Array<ITimeAndLocation>>("TIME_AND_LOCATION","https://moviebot-rage.azurewebsites.net/api/v1/Search/CinemaFromMovie", "GET");
 
 export var dashboardReducer = new Flux.Reducer<IDashboardState>(
@@ -148,16 +137,14 @@ export var dashboardReducer = new Flux.Reducer<IDashboardState>(
             reduce: (state: IDashboardState, payload: ITimeAndLocationArrayResponse) => {
                 state.dashboard.result.forEach(element => {
                     payload.Data.forEach(payl => {
-                        if(element.id == payl.ImdbID){
-                            var timeArray = [];
+                        if(element.id == payl.ImdbId){
                             payl.Projections.forEach(proj => {
-                                timeArray.push(proj.Time);
+                                var tAndL: ITimeAndLocation = {
+                                    location: payl.Cinema.City + ': ' + payl.Cinema.Name,
+                                    time: proj.Date + ': ' + proj.Time
+                                }
+                                element.timeAndLocation.push(tAndL);
                             });
-                            var tAndL: ITimeAndLocation = {
-                                location: payl.Cinema.City + ' ' + payl.Cinema.Name,
-                                time: timeArray
-                            }
-                            element.timeAndLocation.push(tAndL);
                         }
                     })
                 });

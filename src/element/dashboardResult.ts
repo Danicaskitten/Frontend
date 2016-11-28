@@ -20,7 +20,7 @@ export abstract class Result extends Element{
         this.url = opts.url;
         this.hide = true;
         this.title = opts.title;
-        this.description = opts.descripiton;
+        this.description = opts.description;
         this.genre = opts.genre;
         this.runtime = opts.runtime;
         this.timeAndLocation = opts.timeAndLocation;
@@ -30,6 +30,9 @@ export abstract class Result extends Element{
         this.hide = !this.hide;
         if(!this.hide){
             app.dispatch(getProjections.payload({ query: { imdbid: this.id }}));
+        }
+        else{
+            this.timeAndLocation.length = 0;
         }
     }  
 }
