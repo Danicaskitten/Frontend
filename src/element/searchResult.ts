@@ -3,21 +3,12 @@ import template from '../template';
 
 
 @template("search-result", null)
-export abstract class ChatReply extends Element {
-    poster: string;
-    title: string;
-    genre: string;
-    runtime: string;
+export abstract class SearchResult extends Element {
     show:boolean;
 
     constructor(opts){
-        super(); 
-        this.poster = opts.poster;
-        this.title = opts.title;
-        this.genre = opts.genre;
-        this.runtime = opts.runtime;
-        this.show = false;
-        
+        super();         
+        this.show = false;        
     }
 
     toggleShowMore(){
