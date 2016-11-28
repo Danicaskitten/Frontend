@@ -20,5 +20,4 @@ export abstract class ChatReply extends Element {
         
       
     }
-         
 }

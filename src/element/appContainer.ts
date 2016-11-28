@@ -6,6 +6,9 @@ import './chat';
 import './chatReply';
 import './chatView';
 import './searchView';
+import './dashboard';
+import './timeAndLocation';
+import './dashboardResult';
 import './searchResult';
 
 

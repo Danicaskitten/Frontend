@@ -4,7 +4,9 @@ import { Route } from 'corky/routing/route'
 import { AppContainer} from './element/appContainer';
 import {searchReducer, searchMovieTitleDummy} from './ducks/searchDuck';
 import { appReducer, goToView, PageActive } from './ducks/appDuck';
+import {dashboardReducer, getImageFromImdb, getMovies} from './ducks/dashboardDuck';
 import {chatReducer,startConversation,getChatMessages} from './ducks/chatDuck';
+
 import IModel from './model';
 var timingInterval = undefined;
 
@@ -12,6 +14,7 @@ export var app = new App<IModel>(
     {
         app: appReducer,
         chat: chatReducer,
+        dashboard: dashboardReducer,
         search: searchReducer
     });
 
@@ -20,6 +23,7 @@ app.setRouter([
         address: "/dashboard",
         on: () => {
             app.dispatch(goToView.payload({ view: PageActive.Dashboard }));
+            app.dispatch(getMovies.payload({}));
             if(timingInterval)
                 clearInterval(timingInterval);
             timingInterval = undefined;
@@ -42,7 +46,7 @@ app.setRouter([
                 clearInterval(timingInterval);
             timingInterval = undefined; 
             
-        },
+        }, 
         subroutes: [
             new Route({
                 address: "/:query",
