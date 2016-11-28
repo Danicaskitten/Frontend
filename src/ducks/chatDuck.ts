@@ -140,7 +140,7 @@ export var chatReducer = new Flux.Reducer<IChatState>([
         reduce: (state: IChatState, payload: { text: string }) => {
             state.conversation.push({
                 url: "https://api.adorable.io/avatars/face/eyes5/nose7/mouth3/47B39D",
-                username: "Danica",
+                username: "Test user",
                 replyText: payload.text,
                 timestamp: new Date(),
                 sender: ReplySender.User,
@@ -162,7 +162,7 @@ export var chatReducer = new Flux.Reducer<IChatState>([
                                                     }, "");
             payload.data.conversationId = state.conversationId;
             payload.data.created = new Date();
-            payload.data.from =  "Danica";
+            payload.data.from =  "Test user";
             payload.data.text = selectedText;
 
             payload.template = { conversationId: state.conversationId};

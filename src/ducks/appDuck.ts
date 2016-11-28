@@ -20,7 +20,7 @@ export interface IAppState {
 var initialState: IAppState = {
     active: PageActive.None,
     user: {
-        username: "Danica",
+        username: "Test user",
         userpicture: "https://api.adorable.io/avatars/face/eyes5/nose7/mouth3/47B39D"
     }
 }
