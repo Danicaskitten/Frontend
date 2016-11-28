@@ -2,6 +2,7 @@ import App from 'corky/app'
 import { mountToDom } from 'corky/tags/mount';
 import { Route } from 'corky/routing/route'
 import { AppContainer} from './element/appContainer';
+import {searchReducer, searchMovieTitleDummy} from './ducks/searchDuck';
 import { appReducer, goToView, PageActive } from './ducks/appDuck';
 import {dashboardReducer, getImageFromImdb, getMovies} from './ducks/dashboardDuck';
 import {chatReducer,startConversation,getChatMessages} from './ducks/chatDuck';
@@ -13,7 +14,8 @@ export var app = new App<IModel>(
     {
         app: appReducer,
         chat: chatReducer,
-        dashboard: dashboardReducer
+        dashboard: dashboardReducer,
+        search: searchReducer
     });
 
 app.setRouter([
@@ -52,7 +54,8 @@ app.setRouter([
                     if(timingInterval)
                         clearInterval(timingInterval);
                     timingInterval = undefined;
-                    // app.dispatch(giphySearch.payload({query:{q: q}}));
+                    app.dispatch(goToView.payload({ view: PageActive.Search }));
+                    app.dispatch(searchMovieTitleDummy.payload({text: decodeURI(q)}));
                 }
             }) 
         ]

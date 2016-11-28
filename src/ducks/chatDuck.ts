@@ -63,7 +63,7 @@ var initialChat: IChatState = {
 }
 
 export const startConversation = new Flux.RequestAction<{},IConversationStartResponse>("START_CONVERSATION","https://directline.botframework.com/api/conversations","POST");
-export const refreshToken = new Flux.RequestAction<IRefreshTokenRequestPayload, string>("START_CONVERSATION","https://directline.botframework.com/api/tokens/{conversationId}/renew","POST");
+export const refreshToken = new Flux.RequestAction<IRefreshTokenRequestPayload, string>("START_CONVERSATION","https://directline.botframework.com/api/tokens/{conversationId}/renew","GET");
 
 export const pushMessage = new Flux.Action<{ text: string }>("SEND_MESSAGE");
 export const sendBotReply = new Flux.RequestAction<ISendMessageRequestPayload, any>("SEND_BOT_REPLY", "https://directline.botframework.com/api/conversations/{conversationId}/messages", "POST");
@@ -117,7 +117,7 @@ export var chatReducer = new Flux.Reducer<IChatState>([
                state.conversationId = payload.conversationId;
                state.token = payload.token;
                state.tokenExpires = 1800;
-            //   setTimeoutForToken(state);
+               setTimeoutForToken(state);
         }
     },
     {
@@ -132,7 +132,7 @@ export var chatReducer = new Flux.Reducer<IChatState>([
         reduce: (state: IChatState, payload: string) => {
             state.token = payload;
             state.tokenExpires = 1800;
-          //  setTimeoutForToken(state);
+            setTimeoutForToken(state);
         }
     },
     {
