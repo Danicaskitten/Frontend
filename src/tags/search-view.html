@@ -1,3 +1,11 @@
 <search-view>
-    <p>MY search view </p>
-</search-view>
+    <input id="search-input" class="search-input" />
+    <span class="span-input-button">
+        <button onclick={search} class="search-input-button">
+            <i class="fa fa-search" aria-hidden="true"></i>            
+        </button>  
+    </span>
+    <div class="result-container">
+             <search-result each={result} />
+    </div>
+</search-view>    
