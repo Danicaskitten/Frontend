@@ -20,6 +20,7 @@ var initialState : IAdvancedSearchState = {
 };
 
 export const advancedMovieSearch = new Flux.RequestAction< {query: { title: string;}},{"Data": Array<IAdvancedSearchMovieResult>}>("SEARCH_MOVIE", "http://moviebot-rage.azurewebsites.net/api/v1/Search/Movie", "GET");
+export const advancedMovieSearchLocation = new Flux.RequestAction< {query: { longitude: string, latitude: string;}},{"Data": Array<IAdvancedSearchMovieResult>}>("SEARCH_MOVIE", "http://moviebot-rage.azurewebsites.net/api/v1/Search/Movie", "GET");
 
 export var advancedSearchReducer = new Flux.Reducer<IAdvancedSearchState>([
     {
@@ -30,6 +31,12 @@ export var advancedSearchReducer = new Flux.Reducer<IAdvancedSearchState>([
     },
     {
         action: advancedMovieSearch.response,
+        reduce: (state : IAdvancedSearchState, payload:{"Data": Array<IAdvancedSearchMovieResult>}) => {
+            state.result = payload.Data;
+        }
+    },
+    {
+        action: advancedMovieSearchLocation.response,
         reduce: (state : IAdvancedSearchState, payload:{"Data": Array<IAdvancedSearchMovieResult>}) => {
             state.result = payload.Data;
         }
