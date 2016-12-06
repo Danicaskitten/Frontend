@@ -3,7 +3,8 @@ import template from '../template';
 import advancedSearchService from '../service/advancedSearchService';
 import {IAdvancedSearchMovieResult} from '../ducks/advancedSearchDuck';
 import {app} from '../main';
-import {advancedMovieSearch, advancedMovieSearchLocation} from '../ducks/advancedSearchDuck';
+import {advancedMovieSearch, advancedMovieSearchLocation, getLocationFromBing} from '../ducks/advancedSearchDuck';
+import {mapKey} from '../config';
 
 
 @template("advanced-search-view",advancedSearchService)
@@ -19,16 +20,20 @@ export abstract class AdvancedSearchView extends Element {
             var value = (<HTMLInputElement>document.getElementById("city-input")).value;
             value = value.trim();
             if(value !== "" && value !== undefined && value !== null)
-                this.router.redirect('/advancedSearch/' + encodeURI(value));
+                getLocation(value);
         }
     }
 }
 
 var onSuccess = function(position) {
-        app.dispatch(advancedMovieSearchLocation.payload({ query: { longitude: position.coords.longitude, latitude: position.coords.latitude}}));
+    app.dispatch(advancedMovieSearchLocation.payload({ query: { longitude: position.coords.longitude, latitude: position.coords.latitude}}));
 }
 
-function onError(error) {
-        alert('code: '    + error.code    + '\n' +
-              'message: ' + error.message + '\n');
-    }
+function onError(error){
+    alert('code: '    + error.code    + '\n' +
+        'message: ' + error.message + '\n');
+}
+
+function getLocation(value){
+    app.dispatch(getLocationFromBing.payload({query: {query: value, key: mapKey}}));
+}
