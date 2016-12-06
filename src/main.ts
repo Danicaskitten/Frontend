@@ -27,6 +27,17 @@ app.setRouter([
             if(timingInterval)
                 clearInterval(timingInterval);
             timingInterval = undefined;
+        },
+        before:()=>{
+            var token = sessionStorage.getItem('token');
+            var expires = sessionStorage.getItem('expires')
+            if(token !== null && expires !== null && new Date(expires) > new Date())
+            {
+                console.log("Authenticated user");
+            }
+            else {
+                app.dispatch(goToView.payload({ view: PageActive.Login }));
+            }
         }
     }),
     new Route({
@@ -71,6 +82,26 @@ app.setRouter([
                 },1000)
             }
         }
+    }),
+    new Route({
+        address: '/init',
+        on: () => {
+            if (localStorage.getItem("username") === null) {
+                app.redirect('/login');
+            }
+        }
+    }),
+     new Route({
+        address: '/register',
+        on: () => {
+            app.dispatch(goToView.payload({ view: PageActive.Register}));
+        }
+    }),
+     new Route({
+        address: '/login',
+        on: () => {
+            app.dispatch(goToView.payload({ view: PageActive.Login}));
+        }
     })
-], '/dashboard');
+], '/init');
 app.init("#app", AppContainer);
