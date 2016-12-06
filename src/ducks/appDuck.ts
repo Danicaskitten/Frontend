@@ -5,7 +5,8 @@ export enum PageActive {
     Chat,
     Search,
     Dashboard,
-    Profile
+    Profile,
+    AdvancedSearch
 }
 export interface Profile {
     username: string,

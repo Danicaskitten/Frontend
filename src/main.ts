@@ -6,6 +6,7 @@ import {searchReducer, searchMovieByTitle} from './ducks/searchDuck';
 import { appReducer, goToView, PageActive } from './ducks/appDuck';
 import {dashboardReducer, getImageFromImdb, getMovies} from './ducks/dashboardDuck';
 import {chatReducer,startConversation,getChatMessages} from './ducks/chatDuck';
+import {advancedMovieSearch, advancedSearchReducer} from './ducks/advancedSearchDuck';
 
 import IModel from './model';
 var timingInterval = undefined;
@@ -15,7 +16,8 @@ export var app = new App<IModel>(
         app: appReducer,
         chat: chatReducer,
         dashboard: dashboardReducer,
-        search: searchReducer
+        search: searchReducer,
+        advancedSearch: advancedSearchReducer
     });
 
 app.setRouter([
@@ -56,6 +58,28 @@ app.setRouter([
                     timingInterval = undefined;
                     app.dispatch(goToView.payload({ view: PageActive.Search }));
                     app.dispatch(searchMovieByTitle.payload({query:{title: decodeURI(q)}}));
+                }
+            }) 
+        ]
+    }),
+    new Route({
+        address: "/advancedSearch",
+        on: () => {
+            app.dispatch(goToView.payload({ view: PageActive.AdvancedSearch }));
+            if(timingInterval)
+                clearInterval(timingInterval);
+            timingInterval = undefined; 
+            
+        }, 
+        subroutes: [
+            new Route({
+                address: "/:query",
+                on: (q) => {
+                    if(timingInterval)
+                        clearInterval(timingInterval);
+                    timingInterval = undefined;
+                    app.dispatch(goToView.payload({ view: PageActive.AdvancedSearch }));
+                    app.dispatch(advancedMovieSearch.payload({query:{title: decodeURI(q)}}));
                 }
             }) 
         ]

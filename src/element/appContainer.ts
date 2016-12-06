@@ -10,6 +10,7 @@ import './dashboard';
 import './timeAndLocation';
 import './dashboardResult';
 import './searchResult';
+import './advancedSearchView';
 
 
 @template("app", appService)
