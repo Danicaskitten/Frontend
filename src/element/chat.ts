@@ -11,7 +11,8 @@ export abstract class Chat extends Element {
           name: string,
           text: string,
           time: string,
-          me: boolean
+          me: boolean,
+          buttons: Array<{title: string, value: string, selected: boolean}>
     }>;
     
 
