@@ -45,6 +45,9 @@ export abstract class Navigation extends Element implements INavigation {
         this.router.redirect('/advancedSearch');
         this.showMenu = false;
     }
-
+    redirectToCinemaSearch() {
+        this.router.redirect('/cinemaSearch');
+        this.showMenu = false;
+    }
 }
 

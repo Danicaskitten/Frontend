@@ -11,6 +11,7 @@ import './timeAndLocation';
 import './dashboardResult';
 import './searchResult';
 import './advancedSearchView';
+import './cinemaSearchView';
 
 
 @template("app", appService)

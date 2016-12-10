@@ -1,0 +1,24 @@
+<cinema-search-view>
+    <div class="search-container">
+        <div class="input-city">
+            <label class="search-label">Use my location</label>
+            <input type="radio" id="search-option" name="selector">
+        </div>
+        <div class="input-city">
+            <label class="search-label">In which city</label>
+            <input id="city-input" class="city-input" />
+        </div>
+        <div class="input-city">
+            <label class="search-label">On what date</label>
+            <input type="date" id="datepicker" class="city-input"/>
+        </div>
+        <div class="span-input-button">
+            <button onclick={cinemaSearch} class="search-input-button">
+                <i class="fa fa-search" aria-hidden="true"></i>            
+            </button>  
+        </div>
+    </div>
+    <div class="result-container">
+        <cinema-result each={result} />
+    </div>
+</cinema-search-view>    

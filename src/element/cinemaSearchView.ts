@@ -1,17 +1,17 @@
 import { Element } from 'corky/tags/element';
 import template from '../template';
-import advancedSearchService from '../service/advancedSearchService';
-import {IAdvancedSearchMovieResult} from '../ducks/advancedSearchDuck';
+import cinemaSearchService from '../service/cinemaSearchService';
+import {ICinemaSearchMovieResult} from '../ducks/cinemaSearchDuck';
 import {app} from '../main';
-import {advancedMovieSearch, advancedMovieSearchLocation, getLocationFromBing} from '../ducks/advancedSearchDuck';
+import {cinemaMovieSearch, cinemaMovieSearchLocation, getLocationFromBing} from '../ducks/cinemaSearchDuck';
 import {mapKey} from '../config';
 
 
-@template("advanced-search-view",advancedSearchService)
-export abstract class AdvancedSearchView extends Element {
-    result: Array<IAdvancedSearchMovieResult>
+@template("cinema-search-view", cinemaSearchService)
+export abstract class CinemaSearchView extends Element {
+    result: Array<ICinemaSearchMovieResult>
 
-    advancedSearch() {
+    cinemaSearch() {
         var isChecked = (<HTMLInputElement>document.getElementById('search-option')).checked;
         if (isChecked){
             navigator.geolocation.getCurrentPosition(onSuccess, onError);
@@ -30,7 +30,8 @@ export abstract class AdvancedSearchView extends Element {
 }
 
 var onSuccess = function(position) {
-    app.dispatch(advancedMovieSearchLocation.payload({ query: { longitude: position.coords.longitude, latitude: position.coords.latitude}}));
+    //app.dispatch(cinemaMovieSearch.payload({ query: { title: "avengers"}}));
+    app.dispatch(cinemaMovieSearchLocation.payload({ query: { longitude: position.coords.longitude, latitude: position.coords.latitude}}));
 }
 
 function onError(error){

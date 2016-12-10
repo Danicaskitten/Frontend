@@ -6,7 +6,8 @@ export enum PageActive {
     Search,
     Dashboard,
     Profile,
-    AdvancedSearch
+    AdvancedSearch,
+    CinemaSearch
 }
 export interface Profile {
     username: string,
