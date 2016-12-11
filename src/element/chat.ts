@@ -14,6 +14,21 @@ export abstract class Chat extends Element {
           me: boolean,
           buttons: Array<{title: string, value: string, selected: boolean}>
     }>;
-    
+    static arrayCount = 0;
+    constructor(){
+        super();
+        this.on('update',function(){
+            if(this.reply.length > this.arrayCount)
+            console.log("IN BABAY")
+                this.scrollToBottom();
+                this.arrayCount = this.reply.length;
+        } )
+    }
+
+    scrollToBottom(){
+             var chatElement = document.getElementsByTagName("chat")[0];
+             if(chatElement !== undefined)
+             chatElement.scrollTop = chatElement.scrollHeight;
+    }
 
 }
