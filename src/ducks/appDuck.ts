@@ -10,9 +10,20 @@ export enum PageActive {
     Register,
     Login
 }
+
+export enum Genres{
+    Comedy,
+    Horror,
+    Action,
+    SciFi,
+    Romance,
+    Drama,
+    Thriller
+}
 export interface Profile {
     username: string,
-    userpicture: string
+    userpicture: string,
+    genres: Array<IChoosenGenres>
 }
 
 export interface IAppState {
@@ -20,13 +31,49 @@ export interface IAppState {
     user: Profile
 }
 
+export var availableGenres = [Genres.Action,Genres.Comedy, Genres.Drama, Genres.Horror, Genres.Romance, Genres.SciFi, Genres.Thriller];
+export interface IChoosenGenres {
+    choosen: boolean,
+    genre: Genres
+}
+
 var initialState: IAppState = {
     active: PageActive.None,
     user: {
         username: "",
-        userpicture: "https://api.adorable.io/avatars/face/eyes5/nose7/mouth3/47B39D"
+        userpicture: "https://api.adorable.io/avatars/face/eyes5/nose7/mouth3/47B39D",
+        genres: [
+            {
+                choosen: true,
+                genre: Genres.Action
+            },
+             {
+                choosen: true,
+                genre: Genres.Comedy
+            },
+             {
+                choosen: true,
+                genre: Genres.Drama
+            },{
+                choosen: true,
+                genre: Genres.Horror
+            },
+             {
+                choosen: true,
+                genre: Genres.Romance
+            },
+             {
+                choosen: true,
+                genre: Genres.SciFi
+            },
+             {
+                choosen: true,
+                genre: Genres.Thriller
+            }
+        ]
     }
 }
+
 
 export interface ITokenResponse{
     access_token: string;
@@ -42,7 +89,21 @@ export const registerUser = new Flux.RequestAction<{data:{Email: string, Passwor
 export const loginUser = new Flux.RequestAction<{data:{userName: string, password: string, grant_type: string}, options:any},ITokenResponse>
                             ("LOGIN_USER","https://moviebot-rage.azurewebsites.net/Token","POST");
 export const readStorage = new Flux.Action("READ_STORAGE");
+export const changeGenres = new Flux.Action<Array<number>>("CHANGE_GENRES");
+
+
 export var appReducer = new Flux.Reducer<IAppState>([
+    {
+        action:changeGenres,
+        reduce:(state: IAppState, payload:Array<number>)=>{
+            state.user.genres.forEach(element =>{
+                if(payload.indexOf(<number>element.genre) !== -1)
+                    element.choosen = true;
+                else
+                    element.choosen = false;
+            })
+        }
+    },
     {
         action:readStorage,
         reduce:(state: IAppState, payload:any)=>{

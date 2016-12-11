@@ -1,4 +1,12 @@
 <profile>
     <h3>Edit profile</h3>
     <p>{username}</p>
+    <div>
+        Available genres:
+        <br/>
+        <span each={genres} >
+        <input id="checkbox-{value}" type="checkbox" checked={choosen} value="{value}"> {text}<br>
+        </span>
+        <button onclick="{saveChanges}">Save genres</button> 
+    </div>
 </profile>   
