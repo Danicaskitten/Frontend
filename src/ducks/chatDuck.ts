@@ -1,6 +1,7 @@
 import Flux from 'corky/flux';
 import {clientSecret} from '../config';
 import {app} from '../main';
+import {loginUser, readStorage} from './appDuck';
 
 
 export interface IConversationStartResponse{
@@ -51,6 +52,7 @@ export interface IChatState {
     tokenExpires: number,
     token:string,
     conversationId: string,
+    username: string,
     watermark: string
 };
 
@@ -58,6 +60,7 @@ var initialChat: IChatState = {
     conversation: [],
     conversationId: undefined,
     tokenExpires: 0,
+    username: undefined,
     token: undefined,
     watermark: undefined
 }
@@ -70,6 +73,12 @@ export const sendBotReply = new Flux.RequestAction<ISendMessageRequestPayload, a
 export const getChatMessages = new Flux.RequestAction<{query: {watermark: string}}, IConversationMessagesResonse>("GET_CHAT","https://directline.botframework.com/api/conversations/{conversationId}/messages","GET");
 
 export var chatReducer = new Flux.Reducer<IChatState>([
+    {
+        action:readStorage,
+        reduce:(state: IChatState, payload:any)=>{
+            state.username = localStorage.getItem("user");
+        }
+    },
     {
         action: getChatMessages.request,
         reduce:(state: IChatState, payload: any) =>{
@@ -136,11 +145,17 @@ export var chatReducer = new Flux.Reducer<IChatState>([
         }
     },
     {
+        action: loginUser.response,
+        reduce: (state: IChatState, payload: {userName:string}) => {
+            state.username = payload.userName;
+        }
+    },
+    {
         action: pushMessage,
         reduce: (state: IChatState, payload: { text: string }) => {
             state.conversation.push({
                 url: "https://api.adorable.io/avatars/face/eyes5/nose7/mouth3/47B39D",
-                username: "Test user",
+                username: state.username,
                 replyText: payload.text,
                 timestamp: new Date(),
                 sender: ReplySender.User,
@@ -162,7 +177,7 @@ export var chatReducer = new Flux.Reducer<IChatState>([
                                                     }, "");
             payload.data.conversationId = state.conversationId;
             payload.data.created = new Date();
-            payload.data.from =  "Test user";
+            payload.data.from =  state.username;
             payload.data.text = selectedText;
 
             payload.template = { conversationId: state.conversationId};

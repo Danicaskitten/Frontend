@@ -98,10 +98,17 @@ var imdbResponse: IImdbResponse = {
 
 export const getImageFromImdb = new Flux.RequestAction<any, ImdbRe>("IMAGE_FROM_IMDB","http://imdb.wemakesites.net/api/tt0848228", "GET");
 export const getMovies = new Flux.RequestAction<any, Array<IDashboardResponse>>("DASHBOARD_LIFE", "https://moviebot-rage.azurewebsites.net/api/v1/Recommender/movies", "GET");
-export const getProjections = new Flux.RequestAction<{ query: {imdbid: string} }, Array<ITimeAndLocation>>("TIME_AND_LOCATION","https://moviebot-rage.azurewebsites.net/api/v1/Search/CinemaFromMovie", "GET");
+export const getProjections = new Flux.RequestAction<{ query: {imdbid: string},options: any}, Array<ITimeAndLocation>>("TIME_AND_LOCATION","https://moviebot-rage.azurewebsites.net/api/v1/Search/CinemaFromMovie", "GET");
 
 export var dashboardReducer = new Flux.Reducer<IDashboardState>(
     [
+        {
+            action: getMovies.request,
+            reduce: (state: IDashboardState, payload: any) => {
+                payload.options = {};
+                payload.options["Content-Type"] = "application/x-www-form-urlencoded; charset=utf-8";
+            }
+        },
         {
             action: getMovies.response,
             reduce: (state: IDashboardState, payload: IDashboardArrayResponse) => {

@@ -10,7 +10,9 @@ import './dashboard';
 import './timeAndLocation';
 import './dashboardResult';
 import './searchResult';
-
+import './registration';
+import './login';
+import './profile';
 
 @template("app", appService)
 export abstract class AppContainer extends Element {
