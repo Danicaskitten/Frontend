@@ -10,7 +10,7 @@ export class ProfileService extends Service {
         }
     );
     actions = {
-        register: (email:string, password: string, confirm:string) => registerUser.payload({data:{email: email, password: password, ConfirmPassword: confirm},options:{}}),
+        register: (email:string, password: string, confirm:string) => registerUser.payload({data:{Email: email, Password: password, ConfirmPassword: confirm},options:{}}),
         login: (email:string, password: string) => loginUser.payload({data:{userName:email, password: password, grant_type: "password"}, options: {}})
     }
 }

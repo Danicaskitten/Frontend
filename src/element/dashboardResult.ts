@@ -29,7 +29,9 @@ export abstract class Result extends Element{
     changeVisibility(event){
         this.hide = !this.hide;
         if(!this.hide){
-            app.dispatch(getProjections.payload({ query: { imdbid: this.id }}));
+            var options = {};
+            options["Content-Type"] = "application/x-www-form-urlencoded; charset=utf-8";
+            app.dispatch(getProjections.payload({ query: { imdbid: this.id },options: options}));
         }
         else{
             this.timeAndLocation.length = 0;
