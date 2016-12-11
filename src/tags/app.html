@@ -1,7 +1,9 @@
 <app>
-    <navigation />
+    <navigation show={active !== 5 && active !== 6}/>
     <chat-view show={active===1 }/>
     <search-view show={active===2} />
     <dashboard show={active===3}/>
-    <div show={active===4 }>Profile</div>
-</app>   
+    <profile show={active===4 } />
+    <registration show={active===5 }/>  
+    <login show={active===6 }/> 
+</app>

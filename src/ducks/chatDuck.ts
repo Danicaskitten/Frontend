@@ -1,6 +1,7 @@
 import Flux from 'corky/flux';
 import {clientSecret} from '../config';
 import {app} from '../main';
+import {loginUser, readStorage} from './appDuck';
 
 
 export interface IConversationStartResponse{
@@ -22,6 +23,7 @@ export interface IReceiveBotMessage {
     conversation:{
         id: string
     },
+    timestamp: string,
     id: string,
     text: string,
     from: {
@@ -75,6 +77,7 @@ export interface IChatState {
     tokenExpires: number,
     token:string,
     conversationId: string,
+    username: string,
     watermark: string
 };
 
@@ -82,6 +85,7 @@ var initialChat: IChatState = {
     conversation: [],
     conversationId: undefined,
     tokenExpires: 0,
+    username: undefined,
     token: undefined,
     watermark: undefined
 }
@@ -94,6 +98,12 @@ export const sendBotReply = new Flux.RequestAction<ISendMessageRequestPayload, a
 export const getChatMessages = new Flux.RequestAction<{query: {watermark: string}}, IConversationMessagesResonse>("GET_CHAT","https://directline.botframework.com/v3/directline/conversations/{conversationId}/activities","GET");
 
 export var chatReducer = new Flux.Reducer<IChatState>([
+    {
+        action:readStorage,
+        reduce:(state: IChatState, payload:any)=>{
+            state.username = localStorage.getItem("user");
+        }
+    },
     {
         action: getChatMessages.request,
         reduce:(state: IChatState, payload: any) =>{
@@ -128,7 +138,7 @@ export var chatReducer = new Flux.Reducer<IChatState>([
                         url: "https://api.adorable.io/avatars/face/eyes1/nose1/mouth6/B05F6D",
                         username: value.from.id,
                         replyText: value.text,
-                        timestamp: new Date(value.created),
+                        timestamp: new Date(value.timestamp),
                         sender: ReplySender.Bot,
                         alreadySent: true,
                         id: value.id,
@@ -170,11 +180,17 @@ export var chatReducer = new Flux.Reducer<IChatState>([
         }
     },
     {
+        action: loginUser.response,
+        reduce: (state: IChatState, payload: {userName:string}) => {
+            state.username = payload.userName;
+        }
+    },
+    {
         action: pushMessage,
         reduce: (state: IChatState, payload: { text: string }) => {
             state.conversation.push({
                 url: "https://api.adorable.io/avatars/face/eyes5/nose7/mouth3/47B39D",
-                username: "Test user",
+                username: state.username,
                 replyText: payload.text,
                 timestamp: new Date(),
                 sender: ReplySender.User,
@@ -209,7 +225,8 @@ export var chatReducer = new Flux.Reducer<IChatState>([
                         return button.value === selectedText;
                     })[0].selected = true;
             }
-            payload.data.from = {id : "Banana"};
+            
+            payload.data.from =  {id:state.username};
             payload.data.text = selectedText;
             payload.data.type = "message";
             payload.template = { conversationId: state.conversationId};

@@ -30,6 +30,11 @@
                 <i class="fa fa-comments-o" aria-hidden="true"></i>Chat
             </a>
         </li>
+        <li class="{active: active === 1} hover-color">
+            <a onclick="{redirectToProfile}">
+                <i class="fa fa-user-o" aria-hidden="true"></i>Profile
+            </a>
+        </li>
     </ul>
 
     <div show={active !==1 } onclick="{redirectToChat}">
