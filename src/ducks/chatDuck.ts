@@ -9,27 +9,46 @@ export interface IConversationStartResponse{
     token: string,
     expires_in: any
 }
+export interface IMessageActivity{
+    content: {
+        title: string,
+        subtitle: string,
+        buttons: Array<{
+            title: string,
+            value: string
+        }>
+    }
+}
 export interface IReceiveBotMessage {
-    conversation: string,
+    conversation:{
+        id: string
+    },
+    timestamp: string,
     id: string,
     text: string,
-    from: string,
-    created: string
-  }
+    from: {
+        id: string
+    },
+    created: string,
+    attachments: Array<IMessageActivity>
+}
 export interface IConversationMessagesResonse{
-  messages: Array<IReceiveBotMessage>,
+  activities: Array<IReceiveBotMessage>,
   watermark:string
 }
 export interface IRefreshTokenRequestPayload{template:{conversationId: string}}
+
 export interface ISendMessageRequestPayload{
     data:{    
-        conversationId: string,
-        created: Date,
-        from: string,
+        type: string,
+        from: {
+            id: string
+        },
         text: string,    
     },
     options: any,
-    template:{conversationId: string}
+    template:{conversationId: string},
+    directSend:boolean
 
 }
 
@@ -43,8 +62,14 @@ export interface IChatReply {
     username: string,
     replyText: string,
     timestamp: Date,
+    id: string,
     sender: ReplySender,
-    alreadySent: boolean
+    alreadySent: boolean,
+    buttons: Array<{
+        value:string,
+        text: string,
+        selected:boolean
+    }>
 };
 
 export interface IChatState {
@@ -65,12 +90,12 @@ var initialChat: IChatState = {
     watermark: undefined
 }
 
-export const startConversation = new Flux.RequestAction<{},IConversationStartResponse>("START_CONVERSATION","https://directline.botframework.com/api/conversations","POST");
-export const refreshToken = new Flux.RequestAction<IRefreshTokenRequestPayload, string>("START_CONVERSATION","https://directline.botframework.com/api/tokens/{conversationId}/renew","GET");
+export const startConversation = new Flux.RequestAction<{},IConversationStartResponse>("START_CONVERSATION","https://directline.botframework.com/v3/directline/conversations","POST");
+export const refreshToken = new Flux.RequestAction<IRefreshTokenRequestPayload, string>("REFRESH_TOKEN","https://directline.botframework.com/v3/directline/tokens/refresh","POST");
 
 export const pushMessage = new Flux.Action<{ text: string }>("SEND_MESSAGE");
-export const sendBotReply = new Flux.RequestAction<ISendMessageRequestPayload, any>("SEND_BOT_REPLY", "https://directline.botframework.com/api/conversations/{conversationId}/messages", "POST");
-export const getChatMessages = new Flux.RequestAction<{query: {watermark: string}}, IConversationMessagesResonse>("GET_CHAT","https://directline.botframework.com/api/conversations/{conversationId}/messages","GET");
+export const sendBotReply = new Flux.RequestAction<ISendMessageRequestPayload, any>("SEND_BOT_REPLY", "https://directline.botframework.com/v3/directline/conversations/{conversationId}/activities", "POST");
+export const getChatMessages = new Flux.RequestAction<{query: {watermark: string}}, IConversationMessagesResonse>("GET_CHAT","https://directline.botframework.com/v3/directline/conversations/{conversationId}/activities","GET");
 
 export var chatReducer = new Flux.Reducer<IChatState>([
     {
@@ -98,16 +123,26 @@ export var chatReducer = new Flux.Reducer<IChatState>([
         action: getChatMessages.response,
         reduce: (state: IChatState, payload: IConversationMessagesResonse)=> {
                state.watermark = payload.watermark;
-               payload.messages.filter((item) => {
-                   return item.from === "Movie_Bot";
+               payload.activities.filter((item) => {
+                   return item.from.id === "Movie_Bot";
                }).forEach((value) => {
+                   var attachments;
+                   console.log(value.attachments)
+                   if(value.attachments !== undefined && value.attachments.length > 0 )
+                        attachments = value.attachments[0].content.buttons.map(function(option){ 
+                                return {text: option.title, value: option.value, selected: false} 
+                        });
+                   else
+                        attachments = [];
                    var message : IChatReply = {
                         url: "https://api.adorable.io/avatars/face/eyes1/nose1/mouth6/B05F6D",
-                        username: value.from,
+                        username: value.from.id,
                         replyText: value.text,
-                        timestamp: new Date(value.created),
+                        timestamp: new Date(value.timestamp),
                         sender: ReplySender.Bot,
-                        alreadySent: true
+                        alreadySent: true,
+                        id: value.id,
+                        buttons: attachments
                    }
                    state.conversation.push(message);
                });
@@ -159,7 +194,9 @@ export var chatReducer = new Flux.Reducer<IChatState>([
                 replyText: payload.text,
                 timestamp: new Date(),
                 sender: ReplySender.User,
-                alreadySent: false
+                alreadySent: false,
+                id: "usermessage",
+                buttons: []
             });
 
             return state;
@@ -168,18 +205,30 @@ export var chatReducer = new Flux.Reducer<IChatState>([
     {
         action: sendBotReply.request,
         reduce: (state: IChatState, payload: ISendMessageRequestPayload) => {
-            var selectedText = state.conversation.filter((reply) => {
+
+            var selectedText = "";
+            if(payload.directSend === false)
+            selectedText = state.conversation.filter((reply) => {
                                                         return reply.alreadySent === false && reply.sender === ReplySender.User;
                                                     })
                                                     .reduce((message, reply) => {
                                                         reply.alreadySent = true;
                                                         return message + " " + reply.replyText;
                                                     }, "");
-            payload.data.conversationId = state.conversationId;
-            payload.data.created = new Date();
-            payload.data.from =  state.username;
+            else
+            {
+                    selectedText = payload.data.text.split('{')[0];
+                    var id = payload.data.text.split('{')[1].replace('}',"");
+                    state.conversation.filter(function(item){
+                        return item.id === id;
+                    })[0].buttons.filter(function(button){
+                        return button.value === selectedText;
+                    })[0].selected = true;
+            }
+            
+            payload.data.from =  {id:state.username};
             payload.data.text = selectedText;
-
+            payload.data.type = "message";
             payload.template = { conversationId: state.conversationId};
             payload.options = {};
             payload.options["Content-Type"] = "application/json";
@@ -201,10 +250,22 @@ export var chatReducer = new Flux.Reducer<IChatState>([
             state.conversation.push({
                 url: "https://api.adorable.io/avatars/face/eyes1/nose1/mouth6/B05F6D",
                 username: "Movie Bot",
-                replyText: "There was an error senging the request" ,
+                replyText: "There was an error senging the request, what do you wish to do?" ,
                 timestamp: new Date(),
                 sender: ReplySender.Bot,
-                alreadySent: true
+                alreadySent: true,
+                id: "idofthebot",
+                buttons: [{
+                    text:"Nothing",
+                    value: "send A",
+                    selected: false
+                },
+                {
+                    text:"More nothing",
+                    value: "send B",
+                    selected:false
+                }
+                ]
             });
             console.log("Payload : " +  payload)
             return state;
@@ -216,11 +277,11 @@ export var chatReducer = new Flux.Reducer<IChatState>([
 function setTimeoutForToken(state){
     if(state.conversationId !== undefined)
     setTimeout(function(k){
-                   app.dispatch(refreshToken.payload({                      
+                  /* app.dispatch(refreshToken.payload({                      
                            template :
                            { conversationId: state.conversationId}
                         
-                   }));
+                   }));*/
                }
     ,state.tokenExpires - 3*60);
 }

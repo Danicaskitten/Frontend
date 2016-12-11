@@ -79,8 +79,9 @@ app.setRouter([
         on: () => {
             app.dispatch(startConversation.payload({}));
             app.dispatch(goToView.payload({ view: PageActive.Chat }));
-            if (timingInterval === undefined) {
-                timingInterval = setInterval(function (k) {
+            if(timingInterval === undefined){
+               timingInterval = setInterval(function(k){
+                   if(app.getState().chat.conversationId !== undefined)
                     app.dispatch(getChatMessages);
                 }, 1000)
             }

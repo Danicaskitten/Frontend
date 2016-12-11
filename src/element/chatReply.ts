@@ -8,7 +8,11 @@ export abstract class ChatReply extends Element {
     name: string;
     text: string;
     time: string;
+    id:string;
     me:boolean;
+    buttons: Array<{title: string, value: string, selected: boolean}>
+
+    abstract sendButton(value: string);
 
     constructor(opts){
         super(); 
@@ -16,8 +20,20 @@ export abstract class ChatReply extends Element {
         this.name = opts.name;
         this.text = opts.text;
         this.time = opts.time;
+        this.id = opts.id;
         this.me = opts.me;
-        
+        this.buttons = opts.buttons;
       
     }
+    sendReply(text){
+        return function(e){
+            if(this.buttons.filter(function(button){
+                return button.selected === true;
+            }).lenght >0 ) return;
+            
+            console.log(e.target.style.backgroundColor,e.target.style.color);
+            this.sendButton(text+"{" + this.id + "}"); 
+        } 
+    }
+
 }
