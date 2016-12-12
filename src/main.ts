@@ -6,6 +6,8 @@ import { searchReducer, searchMovieByTitle } from './ducks/searchDuck';
 import { appReducer, goToView, PageActive,readStorage} from './ducks/appDuck';
 import { dashboardReducer, getImageFromImdb, getMovies } from './ducks/dashboardDuck';
 import { chatReducer, startConversation, getChatMessages } from './ducks/chatDuck';
+import {advancedSearchReducer} from './ducks/advancedSearchDuck';
+import {cinemaSearchReducer} from './ducks/cinemaSearchDuck';
 
 import IModel from './model';
 var timingInterval = undefined;
@@ -26,7 +28,9 @@ export var app = new App<IModel>(
         app: appReducer,
         chat: chatReducer,
         dashboard: dashboardReducer,
-        search: searchReducer
+        search: searchReducer,
+        advancedSearch: advancedSearchReducer,
+        cinemaSearch: cinemaSearchReducer
     });
 
 app.setRouter([
@@ -73,6 +77,36 @@ app.setRouter([
             })
         ],
         before: checkIfUserLoggedIn
+    }),
+    new Route({
+        address: "/advancedSearch",
+        on: () => {
+            app.dispatch(goToView.payload({ view: PageActive.AdvancedSearch }));
+            if(timingInterval)
+                clearInterval(timingInterval);
+            timingInterval = undefined; 
+        }
+    }),
+    new Route({
+        address: "/cinemaSearch",
+        on: () => {
+            app.dispatch(goToView.payload({ view: PageActive.CinemaSearch }));
+            if(timingInterval)
+                clearInterval(timingInterval);
+            timingInterval = undefined; 
+        }, 
+        subroutes: [
+            new Route({
+                address: "/:query",
+                on: (q) => {
+                    if(timingInterval)
+                        clearInterval(timingInterval);
+                    timingInterval = undefined;
+                    app.dispatch(goToView.payload({ view: PageActive.CinemaSearch }));
+                    //app.dispatch(advancedMovieSearch.payload({query:{title: decodeURI(q)}}));
+                }
+            }) 
+        ]
     }),
     new Route({
         address: "/chat",

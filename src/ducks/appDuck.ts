@@ -9,6 +9,8 @@ export enum PageActive {
     Profile,
     Register,
     Login
+    AdvancedSearch,
+    CinemaSearch
 }
 
 export enum Genres{
