@@ -2,15 +2,11 @@
     <div class="search-container">
         <div class="input-city">
             <label class="search-label">Use my location</label>
-            <input type="radio" id="cinema-option" name="selector">
+            <input type="checkbox" id="cinema-option" name="selector" onclick={useLocation}>
         </div>
         <div class="input-city">
             <label class="search-label">In which city</label>
             <input id="cinema-city-input" class="city-input" />
-        </div>
-        <div class="input-city">
-            <label class="search-label">On what date</label>
-            <input type="date" id="datepicker" class="city-input"/>
         </div>
         <div class="span-input-button">
             <button onclick={cinemaSearch} class="search-input-button">
@@ -19,6 +15,6 @@
         </div>
     </div>
     <div class="result-container">
-        <cinema-result each={result} />
+        <cinema-result each={cinemaResult} />
     </div>
 </cinema-search-view>    

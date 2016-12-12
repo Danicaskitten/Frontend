@@ -1,12 +1,8 @@
 <cinema-result>
-    <img src={Poster} />
     <div class="data-container">
-        <h5>{Title}</h5>
-        <span>{Genre}</span>        
-        <span>{Runtime}</span>
-        <span class="show-more-button" onclick={toggleShowMore}>Show more.. </span>
-        <div show={show}>
-            {Plot} 
-        </div>
-    </div>  
+        <h5>{Name}</h5>
+        <span class="info">Address: {Address}</span>        
+        <span class="info">City: {City}</span>
+        <span class="info">Phone number: {PhoneNumber}</span>   
+    </div>
 </cinema-result> 

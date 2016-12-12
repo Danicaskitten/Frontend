@@ -4,7 +4,7 @@ import {ICinemaSearchMovieResult} from '../ducks/cinemaSearchDuck';
 
 export class CinemaSearchService extends Service {
     selector = (state: IModel) => ({
-        result: state.cinemaSearch.result
+        cinemaResult: state.cinemaSearch.cinemaResult
     });
 }
 

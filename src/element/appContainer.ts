@@ -12,6 +12,7 @@ import './dashboardResult';
 import './searchResult';
 import './advancedSearchView';
 import './cinemaSearchView';
+import './cinemaResult';
 
 
 @template("app", appService)

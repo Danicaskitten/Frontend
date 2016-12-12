@@ -2,42 +2,45 @@ import Flux from 'corky/flux';
 import {app} from '../main';
 
 export interface ICinemaSearchMovieResult{
-    Title: string,
-    ImdbDb: string,
-    Poster: string,
-    Runtime: string,
-    Plot: string,
-    Genre: string
+    Name: string,
+    CinemaID: string,
+    Address: string,
+    Latitude: string,
+    Longitude: string,
+    PhoneNumber: string,
+    Region: string,
+    Province: string,
+    City: string
 }
 
 
 export interface ICinemaSearchState{
     query: string;
-    result: Array<ICinemaSearchMovieResult>
+    cinemaResult: Array<ICinemaSearchMovieResult>
 }
 
 var initialState : ICinemaSearchState = {
     query: "",
-    result: []
+    cinemaResult: []
 };
 
 var coordinates = [];
 
-export const cinemaMovieSearch = new Flux.RequestAction<{query: { title: string;}},{"Data": Array<ICinemaSearchMovieResult>}>("SEARCH_CINEMA", "http://moviebot-rage.azurewebsites.net/api/v1/Search/Movie", "GET");
-export const cinemaMovieSearchLocation = new Flux.RequestAction<{query: { longitude: string, latitude: string;}},{"Data": Array<ICinemaSearchMovieResult>}>("SEARCH_CINEMA_LOCATIONS", "http://moviebot-rage.azurewebsites.net/api/v1/Search/Movie", "GET");
+export const cinemaMovieSearchLocation = new Flux.RequestAction<{template:{longitude: string, latitude: string}}, any>("ADVANCE_SEARCH_CINEMA", "http://moviebot-rage.azurewebsites.net/api/v2/cinemas/location/{latitude}/{longitude}/", "GET");
 export const getLocationFromBing = new Flux.RequestAction<{query: {query: string, key: string;}}, any>("GET_LOCATION", "http://dev.virtualearth.net/REST/v1/Locations", "GET");
 
 export var cinemaSearchReducer = new Flux.Reducer<ICinemaSearchState>([
     {
-        action: cinemaMovieSearch.response,
-        reduce: (state : ICinemaSearchState, payload:{"Data": Array<ICinemaSearchMovieResult>}) => {
-            state.result = payload.Data;
-        }
-    },
+           action: cinemaMovieSearchLocation.request,
+           reduce: (state: ICinemaSearchState, payload: any) => {
+               payload.options = {};
+               payload.options["Content-Type"] = "application/x-www-form-urlencoded; charset=utf-8";
+           }
+       },
     {
         action: cinemaMovieSearchLocation.response,
-        reduce: (state : ICinemaSearchState, payload:{"Data": Array<ICinemaSearchMovieResult>}) => {
-            state.result = payload.Data;
+        reduce: (state : ICinemaSearchState, payload: any) => {
+            state.cinemaResult = payload.Data;
         }
     },
     {
@@ -51,7 +54,6 @@ export var cinemaSearchReducer = new Flux.Reducer<ICinemaSearchState>([
 
 function getLocation(){
     setTimeout(function(){
-        app.dispatch(cinemaMovieSearch.payload({ query: { title: "avengers"}}));
-        //app.dispatch(advancedMovieSearchLocation.payload({ query: { longitude: coordinates[1], latitude: coordinates[0]}}));
+        app.dispatch(cinemaMovieSearchLocation.payload({template:{longitude: coordinates[1], latitude: coordinates[0]}}));
     }, 3000);
 }
