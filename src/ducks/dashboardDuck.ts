@@ -103,6 +103,13 @@ export const getProjections = new Flux.RequestAction<{ query: {imdbid: string} }
 export var dashboardReducer = new Flux.Reducer<IDashboardState>(
     [
         {
+           action: getMovies.request,
+           reduce: (state: IDashboardState, payload: any) => {
+               payload.options = {};
+               payload.options["Content-Type"] = "application/x-www-form-urlencoded; charset=utf-8";
+           }
+       },
+        {
             action: getMovies.response,
             reduce: (state: IDashboardState, payload: IDashboardArrayResponse) => {
                 state.dashboard.result = payload.Data.map((obj) => {

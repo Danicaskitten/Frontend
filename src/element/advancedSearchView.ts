@@ -3,7 +3,7 @@ import template from '../template';
 import advancedSearchService from '../service/advancedSearchService';
 import {IAdvancedSearchMovieResult} from '../ducks/advancedSearchDuck';
 import {app} from '../main';
-import {advancedMovieSearch, advancedMovieSearchLocation, getLocationFromBing} from '../ducks/advancedSearchDuck';
+import {advancedMovieSearchLocation, getLocationFromBing} from '../ducks/advancedSearchDuck';
 import {mapKey} from '../config';
 
 
@@ -12,6 +12,9 @@ export abstract class AdvancedSearchView extends Element {
     result: Array<IAdvancedSearchMovieResult>
 
     advancedSearch() {
+        dateFromForm = (<HTMLInputElement>document.getElementById("datepicker")).value;
+        dateFromForm = dateFromForm.trim();
+        
         var isChecked = (<HTMLInputElement>document.getElementById('search-option')).checked;
         if (isChecked){
             navigator.geolocation.getCurrentPosition(onSuccess, onError);
@@ -21,16 +24,14 @@ export abstract class AdvancedSearchView extends Element {
             city = city.trim();
             if(city !== "" && city !== undefined && city !== null)
                 getLocation(city);
-            
-            var date = (<HTMLInputElement>document.getElementById("datepicker")).value;
-            date = date.trim();
-            //if(date !== "" && city !)
         }
     }
 }
 
+var dateFromForm = "";
+
 var onSuccess = function(position) {
-    app.dispatch(advancedMovieSearchLocation.payload({ query: { longitude: position.coords.longitude, latitude: position.coords.latitude}}));
+    app.dispatch(advancedMovieSearchLocation.payload({template:{longitude: position.coords.longitude, latitude: position.coords.latitude}, query: {StartDate: dateFromForm, EndDate: ""}}));
 }
 
 function onError(error){

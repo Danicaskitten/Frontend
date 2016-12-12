@@ -12,12 +12,12 @@ export abstract class CinemaSearchView extends Element {
     result: Array<ICinemaSearchMovieResult>
 
     cinemaSearch() {
-        var isChecked = (<HTMLInputElement>document.getElementById('search-option')).checked;
+        var isChecked = (<HTMLInputElement>document.getElementById('cinema-option')).checked;
         if (isChecked){
             navigator.geolocation.getCurrentPosition(onSuccess, onError);
         }
         else{
-            var city = (<HTMLInputElement>document.getElementById("city-input")).value;
+            var city = (<HTMLInputElement>document.getElementById("cinema-city-input")).value;
             city = city.trim();
             if(city !== "" && city !== undefined && city !== null)
                 getLocation(city);

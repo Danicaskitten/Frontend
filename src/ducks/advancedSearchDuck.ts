@@ -3,13 +3,23 @@ import {app} from '../main';
 
 export interface IAdvancedSearchMovieResult{
     Title: string,
-    ImdbDb: string,
+    ImdbID: string,
     Poster: string,
     Runtime: string,
     Plot: string,
     Genre: string
 }
 
+export interface IAdvancedArrayResponse {
+    Data: Array<{
+        Title: string,
+        ImdbID: string,
+        Poster: string,
+        Runtime: string,
+        Plot: string,
+        Genre: string
+    }>
+}
 
 export interface IAdvancedSearchState{
     query: string;
@@ -23,20 +33,13 @@ var initialState : IAdvancedSearchState = {
 
 var coordinates = [];
 
-export const advancedMovieSearch = new Flux.RequestAction<{query: { title: string;}},{"Data": Array<IAdvancedSearchMovieResult>}>("SEARCH_MOVIE", "http://moviebot-rage.azurewebsites.net/api/v1/Search/Movie", "GET");
-export const advancedMovieSearchLocation = new Flux.RequestAction<{query: { longitude: string, latitude: string;}},{"Data": Array<IAdvancedSearchMovieResult>}>("SEARCH_MOVIE", "http://moviebot-rage.azurewebsites.net/api/v1/Search/Movie", "GET");
+export const advancedMovieSearchLocation = new Flux.RequestAction<{template:{longitude: string, latitude: string}, query: { StartDate: string, EndDate: string;}}, any>("ADVANCE_SEARCH_MOVIE", "http://moviebot-rage.azurewebsites.net/api/v2/movies/near/{latitude}/{longitude}/", "GET");
 export const getLocationFromBing = new Flux.RequestAction<{query: {query: string, key: string;}}, any>("GET_LOCATION", "http://dev.virtualearth.net/REST/v1/Locations", "GET");
 
 export var advancedSearchReducer = new Flux.Reducer<IAdvancedSearchState>([
     {
-        action: advancedMovieSearch.response,
-        reduce: (state : IAdvancedSearchState, payload:{"Data": Array<IAdvancedSearchMovieResult>}) => {
-            state.result = payload.Data;
-        }
-    },
-    {
         action: advancedMovieSearchLocation.response,
-        reduce: (state : IAdvancedSearchState, payload:{"Data": Array<IAdvancedSearchMovieResult>}) => {
+        reduce: (state: IAdvancedSearchState, payload: any) => {
             state.result = payload.Data;
         }
     },
@@ -51,7 +54,6 @@ export var advancedSearchReducer = new Flux.Reducer<IAdvancedSearchState>([
 
 function getLocation(){
     setTimeout(function(){
-        app.dispatch(advancedMovieSearch.payload({ query: { title: "avengers"}}));
-        //app.dispatch(advancedMovieSearchLocation.payload({ query: { longitude: coordinates[1], latitude: coordinates[0]}}));
+        //app.dispatch(advancedMovieSearchLocation.payload({template:{longitude: coordinates[1], latitude: coordinates[0]}, query: {StartDate: "", EndDate: ""}}));
     }, 3000);
 }

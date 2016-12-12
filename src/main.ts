@@ -6,7 +6,7 @@ import {searchReducer, searchMovieByTitle} from './ducks/searchDuck';
 import { appReducer, goToView, PageActive } from './ducks/appDuck';
 import {dashboardReducer, getImageFromImdb, getMovies} from './ducks/dashboardDuck';
 import {chatReducer,startConversation,getChatMessages} from './ducks/chatDuck';
-import {advancedMovieSearch, advancedSearchReducer} from './ducks/advancedSearchDuck';
+import {advancedSearchReducer} from './ducks/advancedSearchDuck';
 import {cinemaSearchReducer} from './ducks/cinemaSearchDuck';
 
 import IModel from './model';
@@ -71,20 +71,7 @@ app.setRouter([
             if(timingInterval)
                 clearInterval(timingInterval);
             timingInterval = undefined; 
-            
-        }, 
-        subroutes: [
-            new Route({
-                address: "/:query",
-                on: (q) => {
-                    if(timingInterval)
-                        clearInterval(timingInterval);
-                    timingInterval = undefined;
-                    app.dispatch(goToView.payload({ view: PageActive.AdvancedSearch }));
-                    app.dispatch(advancedMovieSearch.payload({query:{title: decodeURI(q)}}));
-                }
-            }) 
-        ]
+        }
     }),
     new Route({
         address: "/cinemaSearch",

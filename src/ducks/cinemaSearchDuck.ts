@@ -23,8 +23,8 @@ var initialState : ICinemaSearchState = {
 
 var coordinates = [];
 
-export const cinemaMovieSearch = new Flux.RequestAction<{query: { title: string;}},{"Data": Array<ICinemaSearchMovieResult>}>("SEARCH_MOVIE", "http://moviebot-rage.azurewebsites.net/api/v1/Search/Movie", "GET");
-export const cinemaMovieSearchLocation = new Flux.RequestAction<{query: { longitude: string, latitude: string;}},{"Data": Array<ICinemaSearchMovieResult>}>("SEARCH_MOVIE", "http://moviebot-rage.azurewebsites.net/api/v1/Search/Movie", "GET");
+export const cinemaMovieSearch = new Flux.RequestAction<{query: { title: string;}},{"Data": Array<ICinemaSearchMovieResult>}>("SEARCH_CINEMA", "http://moviebot-rage.azurewebsites.net/api/v1/Search/Movie", "GET");
+export const cinemaMovieSearchLocation = new Flux.RequestAction<{query: { longitude: string, latitude: string;}},{"Data": Array<ICinemaSearchMovieResult>}>("SEARCH_CINEMA_LOCATIONS", "http://moviebot-rage.azurewebsites.net/api/v1/Search/Movie", "GET");
 export const getLocationFromBing = new Flux.RequestAction<{query: {query: string, key: string;}}, any>("GET_LOCATION", "http://dev.virtualearth.net/REST/v1/Locations", "GET");
 
 export var cinemaSearchReducer = new Flux.Reducer<ICinemaSearchState>([
