@@ -44,6 +44,13 @@ export var cinemaSearchReducer = new Flux.Reducer<ICinemaSearchState>([
         }
     },
     {
+        action: getLocationFromBing.request,
+        reduce: (state : ICinemaSearchState, payload: any) => {
+            payload.options = {};
+            payload.options["Content-Type"] = "application/x-www-form-urlencoded;  charset=utf-8";
+        }
+    },
+    {
         action: getLocationFromBing.response,
         reduce: (state : ICinemaSearchState, payload: any) => {
             coordinates = payload.resourceSets[0].resources[0].point.coordinates;

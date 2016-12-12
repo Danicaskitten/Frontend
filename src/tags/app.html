@@ -1,12 +1,10 @@
 <app>
     <navigation show={active !== 5 && active !== 6}/>
     <chat-view show={active===1 }/>
-    <search-view show={active===2} />
+    <search-view show={active===2 || active ===7 || active ===8} />
     <dashboard show={active===3}/>
     <profile show={active===4 } />
     <registration show={active===5 }/>  
     <login show={active===6 }/> 
 
-    <advanced-search-view show={active===7} />
-    <cinema-search-view show={active===8} />
-</app>
+</app>  

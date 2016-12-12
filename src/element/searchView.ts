@@ -6,12 +6,22 @@ import {ISearchMovieResult} from '../ducks/searchDuck';
 
 @template("search-view",searchService)
 export abstract class SearchView extends Element {
-    result: Array<ISearchMovieResult>
+    result: Array<ISearchMovieResult>;
+    active: boolean;
 
-    search() {
+    search() { 
         var value = (<HTMLInputElement>document.getElementById("search-input")).value;
         value = value.trim();
         if(value !== "" && value!== undefined && value !== null)
             this.router.redirect('/search/' + encodeURI(value));
+    }
+     redirectToAdvancedSearch() {
+        this.router.redirect('/advancedSearch');
+    }
+    redirectToCinemaSearch() {
+        this.router.redirect('/cinemaSearch');
+    }
+    redirectToSearch() {
+        this.router.redirect('/search');
     }
 }

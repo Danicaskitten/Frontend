@@ -1,6 +1,21 @@
  @import 'variables.less';
-search-view{
-    height: ~"calc(100vh - 60px)";
+ search-view{
+     .nav-button{
+        min-width: 33.333%;
+        display: table-cell;
+        padding: 10px;
+        background: @bright-gray;
+        color: @dark-pink;
+        border: 0px;
+         
+     }
+     .active-nav{
+         background: @dark-pink;
+        color: @bright-gray;
+     }
+ }
+.search-view{
+    height: ~"calc(100vh - 60px - 30px)";
     display: block;
     position: relative;
     overflow: hidden;

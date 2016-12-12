@@ -1,11 +1,20 @@
 <search-view>
-    <input id="search-input" class="search-input" />
-    <span class="span-input-button">
-        <button onclick={search} class="search-input-button">
-            <i class="fa fa-search" aria-hidden="true"></i>            
-        </button>  
-    </span> 
-    <div class="result-container">
-             <search-result each={result} /> 
-    </div>
+    <div style="display:table;width:100%">
+        <button class="nav-button {active-nav: active===2}" onclick="{redirectToSearch}" >Basic</button>
+        <button class="nav-button {active-nav: active===7}" onclick="{redirectToAdvancedSearch}" >Advanced</button>
+        <button class="nav-button {active-nav: active===8}" onclick="{redirectToCinemaSearch}" >Cinema Search</button>
+    </div>  
+    <advanced-search-view  show="{active === 7}" />
+    <cinema-search-view show="{ active === 8}" />
+    <div class="search-view" show="{active === 2}">
+        <input id="search-input" class="search-input" />
+        <span class="span-input-button">
+            <button onclick={search} class="search-input-button">
+                <i class="fa fa-search" aria-hidden="true"></i>            
+            </button>     
+        </span>  
+        <div class="result-container"> 
+                <search-result each={result} /> 
+        </div>      
+    <div>
 </search-view>    

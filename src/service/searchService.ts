@@ -6,7 +6,8 @@ export class SearchService extends Service {
     selector =
     (state: IModel) => (
         {
-           result: state.search.result
+           result: state.search.result,
+           active: <number> state.app.active
         }
     );
     actions = {

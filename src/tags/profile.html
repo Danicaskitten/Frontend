@@ -1,11 +1,11 @@
 <profile>
-    <h3>Edit profile</h3>
-    <p>{username}</p>
-    <div>
+    <h3> <span style="padding-left: 20px;
+    color: #B05F6D;">Edit profile - </span> <span style="font-weight: 700;">{username}</span></h3>
+    <div style="padding-left:20px">
         Available genres:
         <br/>
-        <span each={genres} >
-        <input id="checkbox-{value}" type="checkbox" checked={choosen} value="{value}"> {text}<br>
+        <span class="radio" each={genres} >
+        <input id="checkbox-{value}" type="checkbox" checked={choosen} value="{value}"><label for="checkbox-{value}"><span></span>{text}</label> <br>
         </span>
         <button onclick="{saveChanges}">Save genres</button> 
     </div>
