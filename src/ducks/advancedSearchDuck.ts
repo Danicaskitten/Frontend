@@ -38,6 +38,13 @@ export const getLocationFromBing = new Flux.RequestAction<{query: {query: string
 
 export var advancedSearchReducer = new Flux.Reducer<IAdvancedSearchState>([
     {
+           action: advancedMovieSearchLocation.request,
+           reduce: (state: IAdvancedSearchState, payload: any) => {
+               payload.options = {};
+               payload.options["Content-Type"] = "application/x-www-form-urlencoded; charset=utf-8";
+           }
+       },
+    {
         action: advancedMovieSearchLocation.response,
         reduce: (state: IAdvancedSearchState, payload: any) => {
             state.result = payload.Data;
@@ -54,6 +61,6 @@ export var advancedSearchReducer = new Flux.Reducer<IAdvancedSearchState>([
 
 function getLocation(){
     setTimeout(function(){
-        //app.dispatch(advancedMovieSearchLocation.payload({template:{longitude: coordinates[1], latitude: coordinates[0]}, query: {StartDate: "", EndDate: ""}}));
+        app.dispatch(advancedMovieSearchLocation.payload({template:{longitude: coordinates[1], latitude: coordinates[0]}, query: {StartDate: "", EndDate: ""}}));
     }, 3000);
 }

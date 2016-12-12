@@ -139,6 +139,13 @@ export var dashboardReducer = new Flux.Reducer<IDashboardState>(
                 return state;
             }
         },
+         {
+           action: getProjections.request,
+           reduce: (state: IDashboardState, payload: any) => {
+               payload.options = {};
+               payload.options["Content-Type"] = "application/x-www-form-urlencoded; charset=utf-8";
+           }
+       },
         {
             action: getProjections.response,
             reduce: (state: IDashboardState, payload: ITimeAndLocationArrayResponse) => {
