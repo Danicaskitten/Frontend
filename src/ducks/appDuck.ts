@@ -8,7 +8,7 @@ export enum PageActive {
     Dashboard,
     Profile,
     Register,
-    Login
+    Login,
     AdvancedSearch,
     CinemaSearch
 }
