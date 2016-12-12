@@ -3,7 +3,7 @@ import template from '../template';
 import cinemaSearchService from '../service/cinemaSearchService';
 import {ICinemaSearchMovieResult} from '../ducks/cinemaSearchDuck';
 import {app} from '../main';
-import {cinemaMovieSearchLocation, getLocationFromBing} from '../ducks/cinemaSearchDuck';
+import {cinemaMovieSearchLocation, getLocationFromOSMCinema} from '../ducks/cinemaSearchDuck';
 import {mapKey} from '../config';
 
 
@@ -12,9 +12,6 @@ export abstract class CinemaSearchView extends Element {
     cinemaResult: Array<ICinemaSearchMovieResult>
 
     cinemaSearch() {
-        dateFromForm = (<HTMLInputElement>document.getElementById("datepicker")).value;
-        dateFromForm = dateFromForm.trim();
-        
         var isChecked = (<HTMLInputElement>document.getElementById('cinema-option')).checked;
         if (isChecked){
             navigator.geolocation.getCurrentPosition(onSuccess, onError);
@@ -28,8 +25,6 @@ export abstract class CinemaSearchView extends Element {
     }
 }
 
-var dateFromForm = "";
-
 var onSuccess = function(position) {
     app.dispatch(cinemaMovieSearchLocation.payload({template:{longitude: position.coords.longitude, latitude: position.coords.latitude}}));
 }
@@ -40,5 +35,5 @@ function onError(error){
 }
 
 function getLocation(value){
-    app.dispatch(getLocationFromBing.payload({query: {query: value, key: mapKey}}));
+    app.dispatch(getLocationFromOSMCinema.payload({template: {city: value}}));
 }

@@ -31,10 +31,11 @@ var initialState : IAdvancedSearchState = {
     result: []
 };
 
-var coordinates = [];
+var latitude = "";
+var longitude = "";
 
 export const advancedMovieSearchLocation = new Flux.RequestAction<{template:{longitude: string, latitude: string}, query: { StartDate: string, EndDate: string;}}, any>("ADVANCE_SEARCH_MOVIE", "http://moviebot-rage.azurewebsites.net/api/v2/movies/near/{latitude}/{longitude}/", "GET");
-export const getLocationFromBing = new Flux.RequestAction<{query: {query: string, key: string;}}, any>("GET_LOCATION", "http://dev.virtualearth.net/REST/v1/Locations", "GET");
+export const getLocationFromOSMAdvanced = new Flux.RequestAction<{template: {city: string}}, any>("GET_LOCATION_ADVANCED", "http://nominatim.openstreetmap.org/search/{city}?format=json", "GET");
 
 export var advancedSearchReducer = new Flux.Reducer<IAdvancedSearchState>([
     {
@@ -51,9 +52,10 @@ export var advancedSearchReducer = new Flux.Reducer<IAdvancedSearchState>([
         }
     },
     {
-        action: getLocationFromBing.response,
+        action: getLocationFromOSMAdvanced.response,
         reduce: (state : IAdvancedSearchState, payload: any) => {
-            coordinates = payload.resourceSets[0].resources[0].point.coordinates;
+            longitude = payload[0].lon; 
+            latitude = payload[0].lat;
             getLocation();
         }
     }
@@ -61,6 +63,6 @@ export var advancedSearchReducer = new Flux.Reducer<IAdvancedSearchState>([
 
 function getLocation(){
     setTimeout(function(){
-        app.dispatch(advancedMovieSearchLocation.payload({template:{longitude: coordinates[1], latitude: coordinates[0]}, query: {StartDate: "", EndDate: ""}}));
+        app.dispatch(advancedMovieSearchLocation.payload({template:{longitude: longitude, latitude: latitude}, query: {StartDate: "", EndDate: "12/14/2016"}}));
     }, 3000);
 }

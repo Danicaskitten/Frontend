@@ -3,8 +3,7 @@ import template from '../template';
 import advancedSearchService from '../service/advancedSearchService';
 import {IAdvancedSearchMovieResult} from '../ducks/advancedSearchDuck';
 import {app} from '../main';
-import {advancedMovieSearchLocation, getLocationFromBing} from '../ducks/advancedSearchDuck';
-import {mapKey} from '../config';
+import {advancedMovieSearchLocation, getLocationFromOSMAdvanced} from '../ducks/advancedSearchDuck';
 
 
 @template("advanced-search-view",advancedSearchService)
@@ -31,7 +30,7 @@ export abstract class AdvancedSearchView extends Element {
 var dateFromForm = "";
 
 var onSuccess = function(position) {
-    app.dispatch(advancedMovieSearchLocation.payload({template:{longitude: position.coords.longitude, latitude: position.coords.latitude}, query: {StartDate: dateFromForm, EndDate: ""}}));
+    app.dispatch(advancedMovieSearchLocation.payload({template:{longitude: position.coords.longitude, latitude: position.coords.latitude}, query: {StartDate: dateFromForm, EndDate: "12/14/2016"}}));
 }
 
 function onError(error){
@@ -40,5 +39,5 @@ function onError(error){
 }
 
 function getLocation(value){
-    app.dispatch(getLocationFromBing.payload({query: {query: value, key: mapKey}}));
+    app.dispatch(getLocationFromOSMAdvanced.payload({template: {city: value}}));
 }

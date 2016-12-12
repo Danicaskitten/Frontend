@@ -24,10 +24,11 @@ var initialState : ICinemaSearchState = {
     cinemaResult: []
 };
 
-var coordinates = [];
+var latitude = "";
+var longitude = "";
 
 export const cinemaMovieSearchLocation = new Flux.RequestAction<{template:{longitude: string, latitude: string}}, any>("ADVANCE_SEARCH_CINEMA", "http://moviebot-rage.azurewebsites.net/api/v2/cinemas/location/{latitude}/{longitude}/", "GET");
-export const getLocationFromBing = new Flux.RequestAction<{query: {query: string, key: string;}}, any>("GET_LOCATION", "http://dev.virtualearth.net/REST/v1/Locations", "GET");
+export const getLocationFromOSMCinema = new Flux.RequestAction<{template: {city: string}}, any>("GET_LOCATION_CINEMA", "http://nominatim.openstreetmap.org/search/{city}?format=json", "GET");
 
 export var cinemaSearchReducer = new Flux.Reducer<ICinemaSearchState>([
     {
@@ -44,16 +45,17 @@ export var cinemaSearchReducer = new Flux.Reducer<ICinemaSearchState>([
         }
     },
     {
-        action: getLocationFromBing.request,
+        action: getLocationFromOSMCinema.request,
         reduce: (state : ICinemaSearchState, payload: any) => {
             payload.options = {};
             payload.options["Content-Type"] = "application/x-www-form-urlencoded;  charset=utf-8";
         }
     },
     {
-        action: getLocationFromBing.response,
+        action: getLocationFromOSMCinema.response,
         reduce: (state : ICinemaSearchState, payload: any) => {
-            coordinates = payload.resourceSets[0].resources[0].point.coordinates;
+            longitude = payload[0].lon; 
+            latitude = payload[0].lat;
             getLocation();
         }
     }
@@ -61,6 +63,6 @@ export var cinemaSearchReducer = new Flux.Reducer<ICinemaSearchState>([
 
 function getLocation(){
     setTimeout(function(){
-        app.dispatch(cinemaMovieSearchLocation.payload({template:{longitude: coordinates[1], latitude: coordinates[0]}}));
+        app.dispatch(cinemaMovieSearchLocation.payload({template:{longitude: longitude, latitude: latitude}}));
     }, 3000);
 }
