@@ -3,12 +3,12 @@ import { app } from '../main';
 
 export interface ISearchState {
     query: string;
-    result: Array<ISearchMovie>
+    movieResult: Array<ISearchMovie>
 }
 
 var initialState: ISearchState = {
     query: "",
-    result: []
+    movieResult: []
 
 };
 
@@ -22,15 +22,24 @@ export interface ISearchMovie {
 }
 
 
-export const searchMovieByTitle = new Flux.RequestAction<{ query: { title: string; } }, {"Data": Array<ISearchMovie>}>("SEARCH_MOVIE", "https://moviebot-rage.azurewebsites.net/api/v2/movies/title/{title}/", "GET");
+
+export const searchMovieByTitle = new Flux.RequestAction<{ template: { title: string } }, any>("SEARCH_MOVIE", "https://moviebot-rage.azurewebsites.net/api/v2/movies/title/{title}", "GET");
 
 
-export var searchReducer = new Flux.Reducer<ISearchState>([
+export var searchReducer = new Flux.Reducer<ISearchState>([    
     {
-        action: searchMovieByTitle.request,
-        reduce: (state: ISearchState, payload: {"Data": Array<ISearchMovie>}) => {
-            state.result = payload.Data;
-
+           action: searchMovieByTitle.request,
+           reduce: (state: ISearchState, payload: any) => {
+               payload.options = {};
+               payload.options["Content-Type"] = "application/x-www-form-urlencoded; charset=utf-8";
+           }
+       },
+    {
+        action: searchMovieByTitle.response,
+        reduce: (state: ISearchState, payload: any) => {
+            state.movieResult = payload.Data;
         }
     }
-], initialState);
+], initialState); 
+
+
