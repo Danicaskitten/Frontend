@@ -29,6 +29,7 @@ var longitude = "";
 
 export const cinemaMovieSearchLocation = new Flux.RequestAction<{template:{longitude: string, latitude: string}}, any>("ADVANCE_SEARCH_CINEMA", "http://moviebot-rage.azurewebsites.net/api/v2/cinemas/location/{latitude}/{longitude}/", "GET");
 export const getLocationFromOSMCinema = new Flux.RequestAction<{template: {city: string}}, any>("GET_LOCATION_CINEMA", "http://nominatim.openstreetmap.org/search/{city}?format=json", "GET");
+export const getLocationFromGoogleApi = new Flux.RequestAction<{query: {key: string}}, any>("GET_LOCATION_GOOGLE", "https://www.googleapis.com/geolocation/v1/geolocate", "POST");
 
 export var cinemaSearchReducer = new Flux.Reducer<ICinemaSearchState>([
     {
@@ -56,6 +57,21 @@ export var cinemaSearchReducer = new Flux.Reducer<ICinemaSearchState>([
         reduce: (state : ICinemaSearchState, payload: any) => {
             longitude = payload[0].lon; 
             latitude = payload[0].lat;
+            getLocation();
+        }
+    },
+    {
+        action: getLocationFromGoogleApi.request,
+        reduce: (state : ICinemaSearchState, payload: any) => {
+            payload.options = {};
+            payload.options["Content-Type"] = "application/x-www-form-urlencoded;  charset=utf-8";
+        }
+    },
+    {
+        action: getLocationFromGoogleApi.response,
+        reduce: (state : ICinemaSearchState, payload: any) => {
+            longitude = payload.location.lng; 
+            latitude = payload.location.lat;
             getLocation();
         }
     }

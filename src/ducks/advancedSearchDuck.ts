@@ -36,6 +36,7 @@ var longitude = "";
 
 export const advancedMovieSearchLocation = new Flux.RequestAction<{template:{longitude: string, latitude: string}, query: { StartDate: string, EndDate: string;}}, any>("ADVANCE_SEARCH_MOVIE", "http://moviebot-rage.azurewebsites.net/api/v2/movies/near/{latitude}/{longitude}/", "GET");
 export const getLocationFromOSMAdvanced = new Flux.RequestAction<{template: {city: string}}, any>("GET_LOCATION_ADVANCED", "http://nominatim.openstreetmap.org/search/{city}?format=json", "GET");
+export const getLocationFromGoogleApi = new Flux.RequestAction<{query: {key: string}}, any>("GET_LOCATION_GOOGLE_ADVANCED", "https://www.googleapis.com/geolocation/v1/geolocate", "POST");
 
 export var advancedSearchReducer = new Flux.Reducer<IAdvancedSearchState>([
     {
@@ -58,11 +59,26 @@ export var advancedSearchReducer = new Flux.Reducer<IAdvancedSearchState>([
             latitude = payload[0].lat;
             getLocation();
         }
+    },
+    {
+        action: getLocationFromGoogleApi.request,
+        reduce: (state : IAdvancedSearchState, payload: any) => {
+            payload.options = {};
+            payload.options["Content-Type"] = "application/x-www-form-urlencoded;  charset=utf-8";
+        }
+    },
+    {
+        action: getLocationFromGoogleApi.response,
+        reduce: (state : IAdvancedSearchState, payload: any) => {
+            longitude = payload.location.lng; 
+            latitude = payload.location.lat;
+            getLocation();
+        }
     }
 ],initialState);
 
 function getLocation(){
     setTimeout(function(){
-        app.dispatch(advancedMovieSearchLocation.payload({template:{longitude: longitude, latitude: latitude}, query: {StartDate: "", EndDate: "12/14/2016"}}));
+        app.dispatch(advancedMovieSearchLocation.payload({template:{longitude: longitude, latitude: latitude}, query: {StartDate: "12/10/2016", EndDate: "12/14/2016"}}));
     }, 3000);
 }

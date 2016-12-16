@@ -3,8 +3,8 @@ import template from '../template';
 import advancedSearchService from '../service/advancedSearchService';
 import {IAdvancedSearchMovieResult} from '../ducks/advancedSearchDuck';
 import {app} from '../main';
-import {advancedMovieSearchLocation, getLocationFromOSMAdvanced} from '../ducks/advancedSearchDuck';
-
+import {advancedMovieSearchLocation, getLocationFromOSMAdvanced, getLocationFromGoogleApi} from '../ducks/advancedSearchDuck';
+import {mapKey} from '../config';
 
 @template("advanced-search-view",advancedSearchService)
 export abstract class AdvancedSearchView extends Element {
@@ -16,7 +16,7 @@ export abstract class AdvancedSearchView extends Element {
         
         var isChecked = (<HTMLInputElement>document.getElementById('search-option')).checked;
         if (isChecked){
-            navigator.geolocation.getCurrentPosition(onSuccess, onError);
+            getLocationFromGoogle();
         }
         else{
             var city = (<HTMLInputElement>document.getElementById("city-input")).value;
@@ -40,4 +40,8 @@ function onError(error){
 
 function getLocation(value){
     app.dispatch(getLocationFromOSMAdvanced.payload({template: {city: value}}));
+}
+
+function getLocationFromGoogle(){
+    app.dispatch(getLocationFromGoogleApi.payload({query: {key: mapKey}}));
 }

@@ -3,7 +3,7 @@ import template from '../template';
 import cinemaSearchService from '../service/cinemaSearchService';
 import {ICinemaSearchMovieResult} from '../ducks/cinemaSearchDuck';
 import {app} from '../main';
-import {cinemaMovieSearchLocation, getLocationFromOSMCinema} from '../ducks/cinemaSearchDuck';
+import {cinemaMovieSearchLocation, getLocationFromOSMCinema, getLocationFromGoogleApi} from '../ducks/cinemaSearchDuck';
 import {mapKey} from '../config';
 
 
@@ -14,7 +14,7 @@ export abstract class CinemaSearchView extends Element {
     cinemaSearch() {
         var isChecked = (<HTMLInputElement>document.getElementById('cinema-option')).checked;
         if (isChecked){
-            navigator.geolocation.getCurrentPosition(onSuccess, onError);
+            getLocationFromGoogle();
         }
         else{
             var city = (<HTMLInputElement>document.getElementById("cinema-city-input")).value;
@@ -36,4 +36,8 @@ function onError(error){
 
 function getLocation(value){
     app.dispatch(getLocationFromOSMCinema.payload({template: {city: value}}));
+}
+
+function getLocationFromGoogle(){
+    app.dispatch(getLocationFromGoogleApi.payload({query: {key: mapKey}}));
 }
