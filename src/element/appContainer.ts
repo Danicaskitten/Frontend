@@ -16,6 +16,7 @@ import './profile';
 import './advancedSearchView';
 import './cinemaSearchView';
 import './cinemaResult';
+import './movieResult';
 
 @template("app", appService)
 export abstract class AppContainer extends Element {

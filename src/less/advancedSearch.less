@@ -80,7 +80,7 @@ advanced-search-view, cinema-search-view{
                 color: white;
     }
 
-    search-result, cinema-result{
+    search-result, cinema-result, movie-result{
         display: flex;
         padding: 5px;
         border: 2px solid #DCC6E0; 
@@ -96,6 +96,9 @@ advanced-search-view, cinema-search-view{
             margin-left: 0;
             font-size: 20px;
         }
+        .data-container{
+            width: 100%;
+        }
         .show-more-button{
             display: inline-block;
             padding: 3px;
@@ -110,6 +113,23 @@ advanced-search-view, cinema-search-view{
         .info{
             display: block;
             margin-top: 5px;
+        }
+        .hidden{
+            visibility: hidden;
+        }
+        .movie-title{
+            text-align: center;
+            padding-top: 5px;
+            margin-bottom: 10px;
+            color: #B05F6D;
+            font-size: 15px;
+        }
+        .description{
+            float: right;
+            max-width: 60%;
+        }
+        .genre{
+            margin-bottom: 10px;
         }
     }
 }

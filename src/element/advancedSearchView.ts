@@ -13,7 +13,8 @@ export abstract class AdvancedSearchView extends Element {
     advancedSearch() {
         dateFromForm = (<HTMLInputElement>document.getElementById("datepicker")).value;
         dateFromForm = dateFromForm.trim();
-        
+        today = getStringFromDate();
+
         var isChecked = (<HTMLInputElement>document.getElementById('search-option')).checked;
         if (isChecked){
             getLocationFromGoogle();
@@ -28,9 +29,10 @@ export abstract class AdvancedSearchView extends Element {
 }
 
 var dateFromForm = "";
+var today = "";
 
 var onSuccess = function(position) {
-    app.dispatch(advancedMovieSearchLocation.payload({template:{longitude: position.coords.longitude, latitude: position.coords.latitude}, query: {StartDate: dateFromForm, EndDate: "12/14/2016"}}));
+    app.dispatch(advancedMovieSearchLocation.payload({template:{longitude: position.coords.longitude, latitude: position.coords.latitude}, query: {StartDate: today, EndDate: dateFromForm}}));
 }
 
 function onError(error){
@@ -44,4 +46,19 @@ function getLocation(value){
 
 function getLocationFromGoogle(){
     app.dispatch(getLocationFromGoogleApi.payload({query: {key: mapKey}}));
+}
+
+function getStringFromDate(){
+    var today = new Date();
+    var dd = today.getDate();
+    var mm = today.getMonth() + 1;
+    var yyyy = today.getFullYear();
+    if(dd<10){
+        var d ='0'+ dd
+    } 
+    if(mm<10){
+        var m= '0'+ mm
+    } 
+    var stringDate = mm + '/' + dd+'/' + yyyy;
+    return stringDate;
 }
