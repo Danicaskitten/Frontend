@@ -3,7 +3,7 @@ import { mountToDom } from 'corky/tags/mount';
 import { Route } from 'corky/routing/route'
 import { AppContainer } from './element/appContainer';
 import { searchReducer, searchMovieByTitle } from './ducks/searchDuck';
-import { appReducer, goToView, PageActive,readStorage} from './ducks/appDuck';
+import { appReducer,logoutUser, goToView, PageActive,readStorage} from './ducks/appDuck';
 import { dashboardReducer, getImageFromImdb, getMovies } from './ducks/dashboardDuck';
 import { chatReducer, startConversation, getChatMessages } from './ducks/chatDuck';
 import {advancedSearchReducer} from './ducks/advancedSearchDuck';
@@ -42,6 +42,18 @@ app.setRouter([
             if (timingInterval)
                 clearInterval(timingInterval);
             timingInterval = undefined;
+        },
+        before: checkIfUserLoggedIn
+    }),
+    new Route({
+        address: "/logout",
+        on: () => {
+            
+            app.dispatch(logoutUser.payload({}));           
+            if (timingInterval)
+                clearInterval(timingInterval);
+            timingInterval = undefined;
+            app.redirect('/login');
         },
         before: checkIfUserLoggedIn
     }),

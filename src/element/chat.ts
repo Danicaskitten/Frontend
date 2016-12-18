@@ -19,7 +19,6 @@ export abstract class Chat extends Element {
         super();
         this.on('update',function(){
             if(this.reply.length > this.arrayCount)
-            console.log("IN BABAY")
                 this.scrollToBottom();
                 this.arrayCount = this.reply.length;
         } )

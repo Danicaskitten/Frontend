@@ -6,14 +6,19 @@
     <h3 show={!showMenu}>
         <i class="fa fa-film" aria-hidden="true"></i> MovieBot
     </h3>
-
+    <a class="additional-click" onclick={toggleAdditional}>
+        <i class="fa fa-ellipsis-v" aria-hidden="true"></i>
+    </a>
+    <span onclick={redirectToLogout} show={showAdditional} class="additional-menu">
+        Log Out
+    </span> 
     <ul show={showMenu}>
         <li class="user-profile">
             <i class="fa fa-bars second-menu" aria-hidden="true" onclick={toggleMenu}></i>
             <div> <img src={userurl}/> </div>
             <a onclick="{redirectToProfile}">
                 <i> {username}</i>
-            </a> 
+            </a>  
         </li>
         <li class="{active: active === 3} hover-color">
             <a onclick="{redirectToDashboard}">
@@ -34,7 +39,7 @@
             <a onclick="{redirectToProfile}">
                 <i class="fa fa-user-o" aria-hidden="true"></i>Profile
             </a>
-        </li>
+        </li>  
        
     </ul>
 
@@ -42,4 +47,4 @@
         <i class="fa fa-comments-o" aria-hidden="true"></i>
     </div>
 
-</navigation>
+</navigation> 

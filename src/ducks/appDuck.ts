@@ -90,11 +90,22 @@ export const registerUser = new Flux.RequestAction<{data:{Email: string, Passwor
                             ("REGISTER_USER","https://moviebot-rage.azurewebsites.net/api/Account/Register","POST");
 export const loginUser = new Flux.RequestAction<{data:{userName: string, password: string, grant_type: string}, options:any},ITokenResponse>
                             ("LOGIN_USER","https://moviebot-rage.azurewebsites.net/Token","POST");
+
+export const logoutUser = new Flux.Action("LOGOUT_USER");
 export const readStorage = new Flux.Action("READ_STORAGE");
 export const changeGenres = new Flux.Action<Array<number>>("CHANGE_GENRES");
 
 
 export var appReducer = new Flux.Reducer<IAppState>([
+    {
+        action: logoutUser,
+        reduce:(state: IAppState, payload: any) => {
+            state = initialState;
+            localStorage.setItem('user', null);
+            localStorage.setItem('token', null);
+            localStorage.setItem('expires', null);
+        }
+    },
     {
         action:changeGenres,
         reduce:(state: IAppState, payload:Array<number>)=>{
