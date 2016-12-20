@@ -60,7 +60,8 @@ export interface IDashboardResponse {
     Poster: string,
     Runtime: string,
     Plot: string,
-    Genre: string
+    Genre: string,
+    CinemaId: string,
 }
 
 export interface IDashboardArrayResponse {
@@ -86,14 +87,6 @@ export interface ImdbRe {
     id: string;
     description: string;
     image: string;
-}
-
-var imdbResponse: IImdbResponse = {
-    data: {
-        id: "fdsgds",
-        description: "fdsfds",
-        image: "fdsfds"
-    }
 }
 
 export const getImageFromImdb = new Flux.RequestAction<any, ImdbRe>("IMAGE_FROM_IMDB","http://imdb.wemakesites.net/api/tt0848228", "GET");
