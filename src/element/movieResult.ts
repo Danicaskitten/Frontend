@@ -32,7 +32,7 @@ export abstract class MovieResult extends Element {
         event.stopPropagation();
         this.hide = !this.hide;
         if(!this.hide){
-            app.dispatch(getProjections.payload({template: { cinemaId: this.CinemaId, Cine: this.ImdbID}}));
+            app.dispatch(getProjections.payload({template: { cinemaId: this.CinemaId, imdbId: this.ImdbID}}));
         }
         else{
             this.Projections.length = 0;

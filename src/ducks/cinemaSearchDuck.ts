@@ -51,7 +51,7 @@ export const cinemaMovieSearchLocation = new Flux.RequestAction<{template:{longi
 export const getLocationFromOSMCinema = new Flux.RequestAction<{template: {city: string}}, any>("GET_LOCATION_CINEMA", "http://nominatim.openstreetmap.org/search/{city}?format=json", "GET");
 export const getLocationFromGoogleApi = new Flux.RequestAction<{query: {key: string}}, any>("GET_LOCATION_GOOGLE", "https://www.googleapis.com/geolocation/v1/geolocate", "POST");
 export const getMovies = new Flux.RequestAction<{template: {cinemaId: string}}, any>("GET_MOVIES", "https://moviebot-rage.azurewebsites.net/api/v2/cinemas/id/{cinemaId}/movies?StartDate={StartDate}&EndDate={EndDate}", "GET");
-export const getProjections = new Flux.RequestAction<{template:{cinemaId: string, Cine: string}}, any>("GET_PROJECTIONS", "http://moviebot-rage.azurewebsites.net/api/v2/projections/list/5/tt0109830/", "GET");
+export const getProjections = new Flux.RequestAction<{template:{cinemaId: string, imdbId: string}}, any>("GET_PROJECTIONS", "http://moviebot-rage.azurewebsites.net/api/v2/projections/list/{imdbId}/{cinemaId}/", "GET");
 
 export var cinemaSearchReducer = new Flux.Reducer<ICinemaSearchState>([
     {
