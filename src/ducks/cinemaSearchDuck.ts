@@ -10,9 +10,29 @@ export interface ICinemaSearchMovieResult{
     PhoneNumber: string,
     Region: string,
     Province: string,
-    City: string
+    City: string,
+    Movies: Array<IMovieResponse>,
+    mov: boolean
 }
 
+export interface IMovieResponse {
+    Title: string,
+    ImdbID: string,
+    Poster: string,
+    Runtime: string,
+    Plot: string,
+    Genre: string,
+    CinemaId: string,
+    Projections: Array<IProjection>
+}
+
+
+export interface IProjection {
+    ImdbID: string,
+    CinemaID: string,
+    Date: string,
+    Time: string
+}
 
 export interface ICinemaSearchState{
     query: string;
@@ -29,6 +49,9 @@ var longitude = "";
 
 export const cinemaMovieSearchLocation = new Flux.RequestAction<{template:{longitude: string, latitude: string}}, any>("ADVANCE_SEARCH_CINEMA", "http://moviebot-rage.azurewebsites.net/api/v2/cinemas/location/{latitude}/{longitude}/", "GET");
 export const getLocationFromOSMCinema = new Flux.RequestAction<{template: {city: string}}, any>("GET_LOCATION_CINEMA", "http://nominatim.openstreetmap.org/search/{city}?format=json", "GET");
+export const getLocationFromGoogleApi = new Flux.RequestAction<{query: {key: string}}, any>("GET_LOCATION_GOOGLE", "https://www.googleapis.com/geolocation/v1/geolocate", "POST");
+export const getMovies = new Flux.RequestAction<{template: {cinemaId: string}}, any>("GET_MOVIES", "https://moviebot-rage.azurewebsites.net/api/v2/cinemas/id/{cinemaId}/movies?StartDate={StartDate}&EndDate={EndDate}", "GET");
+export const getProjections = new Flux.RequestAction<{template:{cinemaId: string, imdbId: string}}, any>("GET_PROJECTIONS", "http://moviebot-rage.azurewebsites.net/api/v2/projections/list/{imdbId}/{cinemaId}/", "GET");
 
 export var cinemaSearchReducer = new Flux.Reducer<ICinemaSearchState>([
     {
@@ -57,6 +80,72 @@ export var cinemaSearchReducer = new Flux.Reducer<ICinemaSearchState>([
             longitude = payload[0].lon; 
             latitude = payload[0].lat;
             getLocation();
+        }
+    },
+    {
+        action: getLocationFromGoogleApi.request,
+        reduce: (state : ICinemaSearchState, payload: any) => {
+            payload.options = {};
+            payload.options["Content-Type"] = "application/x-www-form-urlencoded;  charset=utf-8";
+        }
+    },
+    {
+        action: getLocationFromGoogleApi.response,
+        reduce: (state : ICinemaSearchState, payload: any) => {
+            longitude = payload.location.lng; 
+            latitude = payload.location.lat;
+            getLocation();
+        }
+    },
+    {
+        action: getMovies.request,
+        reduce: (state : ICinemaSearchState, payload: any) => {
+            state.cinemaResult.forEach(element => {
+                if(element.CinemaID == payload.template.cinemaId){
+                    element.mov = true;
+                }
+            });
+            payload.options = {};
+            payload.options["Content-Type"] = "application/x-www-form-urlencoded;  charset=utf-8";
+        }
+    },
+    {
+        action: getMovies.response,
+        reduce: (state : ICinemaSearchState, payload: any) => {
+            state.cinemaResult.forEach(element => {
+                if(element.mov == true){
+                    element.Movies = payload.Data;
+                    element.Movies.forEach(movie => {
+                        movie.CinemaId = element.CinemaID;
+                    })
+                    element.mov = false;
+                }
+                else if(element.Movies != undefined){
+                    element.Movies.length = 0;
+                }
+            });
+            return state;
+        }
+    },
+    {
+        action: getProjections.request,
+        reduce: (state : ICinemaSearchState, payload: any) => {
+            payload.options = {};
+            payload.options["Content-Type"] = "application/x-www-form-urlencoded;  charset=utf-8";
+        }
+    },
+    {
+        action: getProjections.response,
+        reduce: (state : ICinemaSearchState, payload: any) => {
+            state.cinemaResult.forEach(element => {
+                if(element.CinemaID == payload.Data[0].CinemaID){
+                    element.Movies.forEach(movie => {
+                        if(movie.ImdbID == payload.Data[0].ImdbID){
+                            movie.Projections = payload.Data;
+                        }
+                    })
+                }
+            })
         }
     }
 ],initialState);
