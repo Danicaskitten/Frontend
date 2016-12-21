@@ -12,42 +12,56 @@ export abstract class Navigation extends Element implements INavigation {
     constructor() {
         super();
         this.showMenu = false;
+        this.showAdditional = false;
     }
 
     active: number;
     username: string;
     userurl: string;
     showMenu:boolean;
-
-    toggleMenu(){
-        this.showMenu = ! this.showMenu;
+    showAdditional:boolean;
+    closeMenus(){
+        this.showAdditional = false;
+        this.showMenu = false;
     }
 
-    redirectToDashboard() {
+    toggleMenu(){
+        this.showMenu = !this.showMenu;
+    }
+    toggleAdditional(){
+        this.showAdditional = !this.showAdditional;
+    }
+
+    redirectToDashboard() { 
         this.router.redirect('/dashboard');
-        this.showMenu = false;
+        this.closeMenus();
+      
+    }
+    redirectToLogout(){
+        this.router.redirect('/logout');
+        this.closeMenus();
     }
 
     redirectToSearch() {
         this.router.redirect('/search');
-         this.showMenu = false;
+        this.closeMenus();
     }
 
     redirectToChat() {
         this.router.redirect('/chat');
-         this.showMenu = false; 
+        this.closeMenus();
     }
      redirectToProfile() {
         this.router.redirect('/profile');
-         this.showMenu = false; 
+        this.closeMenus();
     }
     redirectToAdvancedSearch() {
         this.router.redirect('/advancedSearch');
-        this.showMenu = false;
+        this.closeMenus();
     }
     redirectToCinemaSearch() {
         this.router.redirect('/cinemaSearch');
-        this.showMenu = false;
+        this.closeMenus();
     }
 }
 

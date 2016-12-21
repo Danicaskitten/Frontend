@@ -1,7 +1,7 @@
 import Flux from 'corky/flux';
 import {clientSecret} from '../config';
 import {app} from '../main';
-import {loginUser, readStorage} from './appDuck';
+import {loginUser, logoutUser, readStorage} from './appDuck';
 
 
 export interface IConversationStartResponse{
@@ -99,6 +99,12 @@ export const getChatMessages = new Flux.RequestAction<{query: {watermark: string
 
 export var chatReducer = new Flux.Reducer<IChatState>([
     {
+        action:logoutUser,
+        reduce:(state: IChatState, payload:any)=>{
+            state = initialChat;
+        }
+    },
+     {
         action:readStorage,
         reduce:(state: IChatState, payload:any)=>{
             state.username = localStorage.getItem("user");
@@ -191,7 +197,7 @@ export var chatReducer = new Flux.Reducer<IChatState>([
             state.conversation.push({
                 url: "https://api.adorable.io/avatars/face/eyes5/nose7/mouth3/47B39D",
                 username: state.username,
-                replyText: payload.text,
+                replyText: payload.text.trim(),
                 timestamp: new Date(),
                 sender: ReplySender.User,
                 alreadySent: false,
@@ -227,7 +233,7 @@ export var chatReducer = new Flux.Reducer<IChatState>([
             }
             
             payload.data.from =  {id:state.username};
-            payload.data.text = selectedText;
+            payload.data.text = selectedText.trim();
             payload.data.type = "message";
             payload.template = { conversationId: state.conversationId};
             payload.options = {};
