@@ -22,13 +22,15 @@ export interface IAdvancedArrayResponse {
 }
 
 export interface IAdvancedSearchState{
-    query: string;
-    result: Array<IAdvancedSearchMovieResult>
+    query: string,
+    result: Array<IAdvancedSearchMovieResult>,
+    myCity: string
 }
 
 var initialState : IAdvancedSearchState = {
     query: "",
-    result: []
+    result: [],
+    myCity: ""
 };
 
 var latitude = "";
@@ -37,6 +39,9 @@ var longitude = "";
 export const advancedMovieSearchLocation = new Flux.RequestAction<{template:{longitude: string, latitude: string}, query: { StartDate: string, EndDate: string;}}, any>("ADVANCE_SEARCH_MOVIE", "http://moviebot-rage.azurewebsites.net/api/v2/movies/near/{latitude}/{longitude}/", "GET");
 export const getLocationFromOSMAdvanced = new Flux.RequestAction<{template: {city: string}}, any>("GET_LOCATION_ADVANCED", "http://nominatim.openstreetmap.org/search/{city}?format=json", "GET");
 export const getLocationFromGoogleApi = new Flux.RequestAction<{query: {key: string}}, any>("GET_LOCATION_GOOGLE_ADVANCED", "https://www.googleapis.com/geolocation/v1/geolocate", "POST");
+export const getLocationForInfoAdvanced = new Flux.RequestAction<{query: {key: string}}, any>("GET_LOCATION_FOR_INFO_ADVANCED", "https://www.googleapis.com/geolocation/v1/geolocate", "POST");
+export const getCityNameAdvanced = new Flux.RequestAction<{query: {format: string, lat: string, lon: string}}, any>("GET_CITY_NAME_ADVANCED", "http://nominatim.openstreetmap.org/reverse", "GET");
+
 
 export var advancedSearchReducer = new Flux.Reducer<IAdvancedSearchState>([
     {
@@ -74,11 +79,45 @@ export var advancedSearchReducer = new Flux.Reducer<IAdvancedSearchState>([
             latitude = payload.location.lat;
             getLocation();
         }
+    },
+    {
+        action: getLocationForInfoAdvanced.request,
+        reduce: (state : IAdvancedSearchState, payload: any) => {
+            payload.options = {};
+            payload.options["Content-Type"] = "application/x-www-form-urlencoded;  charset=utf-8";
+        }
+    },
+    {
+        action: getLocationForInfoAdvanced.response,
+        reduce: (state : IAdvancedSearchState, payload: any) => {
+            longitude = payload.location.lng; 
+            latitude = payload.location.lat;
+            getCityNameByLocation();
+        }
+    },
+    {
+        action: getCityNameAdvanced.request,
+        reduce: (state : IAdvancedSearchState, payload: any) => {
+            payload.options = {};
+            payload.options["Content-Type"] = "application/x-www-form-urlencoded;  charset=utf-8";
+        }
+    },
+    {
+        action: getCityNameAdvanced.response,
+        reduce: (state : IAdvancedSearchState, payload: any) => {
+            state.myCity = payload.address.city;
+        }
     }
 ],initialState);
 
 function getLocation(){
     setTimeout(function(){
         app.dispatch(advancedMovieSearchLocation.payload({template:{longitude: longitude, latitude: latitude}, query: {StartDate: "12/10/2016", EndDate: "12/14/2016"}}));
+    }, 3000);
+}
+
+function getCityNameByLocation(){
+    setTimeout(function(){
+        app.dispatch(getCityNameAdvanced.payload({query: {format: "json", lat: latitude, lon: longitude}}));
     }, 3000);
 }
