@@ -30,7 +30,7 @@ export interface IMovieResponse {
 export interface IProjection {
     ImdbID: string,
     CinemaID: string,
-    Date: string,
+    date: string,
     Time: string
 }
 
@@ -146,6 +146,9 @@ export var cinemaSearchReducer = new Flux.Reducer<ICinemaSearchState>([
                     element.Movies.forEach(movie => {
                         if(movie.ImdbID == payload.Data[0].ImdbID){
                             movie.Projections = payload.Data;
+                            for(var i = 0; i < payload.Data.length; i++){
+                                movie.Projections[i].date = payload.Data[i].Date;
+                            }
                         }
                     })
                 }
