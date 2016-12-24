@@ -1,5 +1,6 @@
 import Flux from 'corky/flux';
 import {app} from '../main';
+import {ICinemaSearchMovieResult} from './cinemaSearchDuck';
 
 export interface IAdvancedSearchMovieResult{
     Title: string,
@@ -7,7 +8,9 @@ export interface IAdvancedSearchMovieResult{
     Poster: string,
     Runtime: string,
     Plot: string,
-    Genre: string
+    Genre: string,
+    Cinemas: Array<ICinemaSearchMovieResult>,
+    cin: boolean
 }
 
 export interface IAdvancedArrayResponse {
@@ -24,13 +27,17 @@ export interface IAdvancedArrayResponse {
 export interface IAdvancedSearchState{
     query: string,
     result: Array<IAdvancedSearchMovieResult>,
-    myCity: string
+    myCity: string,
+    latitude: string,
+    longitude: string
 }
 
 var initialState : IAdvancedSearchState = {
     query: "",
     result: [],
-    myCity: ""
+    myCity: "",
+    latitude: "",
+    longitude: "",
 };
 
 var latitude = "";
@@ -41,7 +48,7 @@ export const getLocationFromOSMAdvanced = new Flux.RequestAction<{template: {cit
 export const getLocationFromGoogleApi = new Flux.RequestAction<{query: {key: string}}, any>("GET_LOCATION_GOOGLE_ADVANCED", "https://www.googleapis.com/geolocation/v1/geolocate", "POST");
 export const getLocationForInfoAdvanced = new Flux.RequestAction<{query: {key: string}}, any>("GET_LOCATION_FOR_INFO_ADVANCED", "https://www.googleapis.com/geolocation/v1/geolocate", "POST");
 export const getCityNameAdvanced = new Flux.RequestAction<{query: {format: string, lat: string, lon: string}}, any>("GET_CITY_NAME_ADVANCED", "http://nominatim.openstreetmap.org/reverse", "GET");
-
+export const getCinemasFromMovie = new Flux.RequestAction<{template: {imdbId: string, latitude: string, longitude: string}}, any>("GET_CINEMAS_FROM_MOVIE", "https://moviebot-rage.azurewebsites.net/api/v2/movies/id/{imdbId}/cinemas/{latitude}/{longitude}/", "GET");
 
 export var advancedSearchReducer = new Flux.Reducer<IAdvancedSearchState>([
     {
@@ -62,6 +69,8 @@ export var advancedSearchReducer = new Flux.Reducer<IAdvancedSearchState>([
         reduce: (state : IAdvancedSearchState, payload: any) => {
             longitude = payload[0].lon; 
             latitude = payload[0].lat;
+            state.latitude = payload[0].lat;
+            state.longitude = payload[0].lon;
             getLocation();
         }
     },
@@ -77,6 +86,8 @@ export var advancedSearchReducer = new Flux.Reducer<IAdvancedSearchState>([
         reduce: (state : IAdvancedSearchState, payload: any) => {
             longitude = payload.location.lng; 
             latitude = payload.location.lat;
+            state.longitude = payload.location.lng;
+            state.latitude = payload.location.lat;
             getLocation();
         }
     },
@@ -92,6 +103,8 @@ export var advancedSearchReducer = new Flux.Reducer<IAdvancedSearchState>([
         reduce: (state : IAdvancedSearchState, payload: any) => {
             longitude = payload.location.lng; 
             latitude = payload.location.lat;
+            state.longitude = payload.location.lng;
+            state.latitude = payload.location.lat;
             getCityNameByLocation();
         }
     },
@@ -106,6 +119,35 @@ export var advancedSearchReducer = new Flux.Reducer<IAdvancedSearchState>([
         action: getCityNameAdvanced.response,
         reduce: (state : IAdvancedSearchState, payload: any) => {
             state.myCity = payload.address.city;
+        }
+    },
+    {
+        action: getCinemasFromMovie.request,
+        reduce: (state : IAdvancedSearchState, payload: any) => {
+            state.result.forEach(element => {
+                if(element.ImdbID == payload.template.imdbId){
+                    element.cin = true;
+                }
+            });
+            var imdb = payload.template.imdbId;
+            payload.template = {imdbId: imdb, longitude: state.longitude, latitude: state.latitude}
+            payload.options = {};
+            payload.options["Content-Type"] = "application/x-www-form-urlencoded;  charset=utf-8";
+        }
+    },
+    {
+        action: getCinemasFromMovie.response,
+        reduce: (state : IAdvancedSearchState, payload: any) => {
+            state.result.forEach(element => {
+                if(element.cin == true){
+                    element.Cinemas = payload.Data;
+                    element.cin = false;
+                }
+                else if(element.Cinemas != undefined){
+                    element.Cinemas.length = 0;
+                }
+            });
+            return state;
         }
     }
 ],initialState);
