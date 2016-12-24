@@ -10,7 +10,9 @@ export enum PageActive {
     Register,
     Login,
     AdvancedSearch,
-    CinemaSearch
+    CinemaSearch,
+    Reservation,
+    ReservationHistory
 }
 
 export enum Genres{

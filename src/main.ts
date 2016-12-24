@@ -8,6 +8,7 @@ import { dashboardReducer, getImageFromImdb, getMovies } from './ducks/dashboard
 import { chatReducer, startConversation, getChatMessages } from './ducks/chatDuck';
 import {advancedSearchReducer} from './ducks/advancedSearchDuck';
 import {cinemaSearchReducer} from './ducks/cinemaSearchDuck';
+import {reservationReducer} from './ducks/reservationDuck';
 
 import IModel from './model';
 var timingInterval = undefined;
@@ -30,10 +31,31 @@ export var app = new App<IModel>(
         dashboard: dashboardReducer,
         search: searchReducer,
         advancedSearch: advancedSearchReducer,
-        cinemaSearch: cinemaSearchReducer
+        cinemaSearch: cinemaSearchReducer,
+        reservation: reservationReducer
     });
 
 app.setRouter([
+     new Route({
+        address: "/reservationHistory",
+        on: () => {
+            app.dispatch(goToView.payload({ view: PageActive.ReservationHistory }));
+            if (timingInterval)
+                clearInterval(timingInterval);
+            timingInterval = undefined;
+        },
+        before: checkIfUserLoggedIn
+    }),
+     new Route({
+        address: "/reservation",
+        on: () => {
+            app.dispatch(goToView.payload({ view: PageActive.Reservation}));
+            if (timingInterval)
+                clearInterval(timingInterval);
+            timingInterval = undefined;
+        },
+        before: checkIfUserLoggedIn
+    }),
     new Route({
         address: "/dashboard",
         on: () => {

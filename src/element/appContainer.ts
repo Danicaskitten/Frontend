@@ -18,6 +18,8 @@ import './cinemaSearchView';
 import './cinemaResult';
 import './movieResult';
 import './projections';
+import './reservationView';
+import './reservationHistoryView';
 
 @template("app", appService)
 export abstract class AppContainer extends Element {
