@@ -30,18 +30,20 @@ export interface IMovieResponse {
 export interface IProjection {
     ImdbID: string,
     CinemaID: string,
-    Date: string,
+    date: string,
     Time: string
 }
 
 export interface ICinemaSearchState{
-    query: string;
-    cinemaResult: Array<ICinemaSearchMovieResult>
+    query: string,
+    cinemaResult: Array<ICinemaSearchMovieResult>,
+    myCity: string
 }
 
 var initialState : ICinemaSearchState = {
     query: "",
-    cinemaResult: []
+    cinemaResult: [],
+    myCity: ""
 };
 
 var latitude = "";
@@ -52,6 +54,8 @@ export const getLocationFromOSMCinema = new Flux.RequestAction<{template: {city:
 export const getLocationFromGoogleApi = new Flux.RequestAction<{query: {key: string}}, any>("GET_LOCATION_GOOGLE", "https://www.googleapis.com/geolocation/v1/geolocate", "POST");
 export const getMovies = new Flux.RequestAction<{template: {cinemaId: string}}, any>("GET_MOVIES", "https://moviebot-rage.azurewebsites.net/api/v2/cinemas/id/{cinemaId}/movies?StartDate={StartDate}&EndDate={EndDate}", "GET");
 export const getProjections = new Flux.RequestAction<{template:{cinemaId: string, imdbId: string}}, any>("GET_PROJECTIONS", "http://moviebot-rage.azurewebsites.net/api/v2/projections/list/{imdbId}/{cinemaId}/", "GET");
+export const getLocationForInfo = new Flux.RequestAction<{query: {key: string}}, any>("GET_LOCATION_FOR_INFO", "https://www.googleapis.com/geolocation/v1/geolocate", "POST");
+export const getCityName = new Flux.RequestAction<{query: {format: string, lat: string, lon: string}}, any>("GET_CITY_NAME", "http://nominatim.openstreetmap.org/reverse", "GET");
 
 export var cinemaSearchReducer = new Flux.Reducer<ICinemaSearchState>([
     {
@@ -142,10 +146,41 @@ export var cinemaSearchReducer = new Flux.Reducer<ICinemaSearchState>([
                     element.Movies.forEach(movie => {
                         if(movie.ImdbID == payload.Data[0].ImdbID){
                             movie.Projections = payload.Data;
+                            for(var i = 0; i < payload.Data.length; i++){
+                                movie.Projections[i].date = payload.Data[i].Date;
+                            }
                         }
                     })
                 }
             })
+        }
+    },
+    {
+        action: getLocationForInfo.request,
+        reduce: (state : ICinemaSearchState, payload: any) => {
+            payload.options = {};
+            payload.options["Content-Type"] = "application/x-www-form-urlencoded;  charset=utf-8";
+        }
+    },
+    {
+        action: getLocationForInfo.response,
+        reduce: (state : ICinemaSearchState, payload: any) => {
+            longitude = payload.location.lng; 
+            latitude = payload.location.lat;
+            getCityNameByLocation();
+        }
+    },
+    {
+        action: getCityName.request,
+        reduce: (state : ICinemaSearchState, payload: any) => {
+            payload.options = {};
+            payload.options["Content-Type"] = "application/x-www-form-urlencoded;  charset=utf-8";
+        }
+    },
+    {
+        action: getCityName.response,
+        reduce: (state : ICinemaSearchState, payload: any) => {
+            state.myCity = payload.address.city;
         }
     }
 ],initialState);
@@ -153,5 +188,11 @@ export var cinemaSearchReducer = new Flux.Reducer<ICinemaSearchState>([
 function getLocation(){
     setTimeout(function(){
         app.dispatch(cinemaMovieSearchLocation.payload({template:{longitude: longitude, latitude: latitude}}));
+    }, 3000);
+}
+
+function getCityNameByLocation(){
+    setTimeout(function(){
+        app.dispatch(getCityName.payload({query: {format: "json", lat: latitude, lon: longitude}}));
     }, 3000);
 }

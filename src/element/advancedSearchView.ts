@@ -9,36 +9,31 @@ import {mapKey} from '../config';
 @template("advanced-search-view",advancedSearchService)
 export abstract class AdvancedSearchView extends Element {
     result: Array<IAdvancedSearchMovieResult>
+    myCity: string
 
     advancedSearch() {
         dateFromForm = (<HTMLInputElement>document.getElementById("datepicker")).value;
         dateFromForm = dateFromForm.trim();
         today = getStringFromDate();
+        var city = "";
 
         var isChecked = (<HTMLInputElement>document.getElementById('search-option')).checked;
         if (isChecked){
-            getLocationFromGoogle();
+            var needsParsing = (<HTMLElement>document.getElementById('label-location-advanced')).textContent;
+            city = parse(needsParsing);
         }
         else{
-            var city = (<HTMLInputElement>document.getElementById("city-input")).value;
+            city = (<HTMLInputElement>document.getElementById("city-input")).value;
             city = city.trim();
-            if(city !== "" && city !== undefined && city !== null)
-                getLocation(city);
+        }
+        if(city !== "" && city !== undefined && city !== null){
+            getLocation(city);
         }
     }
 }
 
 var dateFromForm = "";
 var today = "";
-
-var onSuccess = function(position) {
-    app.dispatch(advancedMovieSearchLocation.payload({template:{longitude: position.coords.longitude, latitude: position.coords.latitude}, query: {StartDate: today, EndDate: dateFromForm}}));
-}
-
-function onError(error){
-    alert('code: '    + error.code    + '\n' +
-        'message: ' + error.message + '\n');
-}
 
 function getLocation(value){
     app.dispatch(getLocationFromOSMAdvanced.payload({template: {city: value}}));
@@ -61,4 +56,11 @@ function getStringFromDate(){
     } 
     var stringDate = mm + '/' + dd+'/' + yyyy;
     return stringDate;
+}
+
+function parse(needsParsing){
+    needsParsing = needsParsing.replace(/\s*$/, "");
+    needsParsing = needsParsing.trim();
+    var n = needsParsing.split(" ");
+    return n[n.length - 1];
 }

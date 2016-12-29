@@ -18,6 +18,7 @@ import './cinemaSearchView';
 import './cinemaResult';
 import './movieResult';
 import './projections';
+import './cinemaResultAdvanced';
 
 @template("app", appService)
 export abstract class AppContainer extends Element {

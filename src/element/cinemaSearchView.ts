@@ -10,28 +10,23 @@ import {mapKey} from '../config';
 @template("cinema-search-view", cinemaSearchService)
 export abstract class CinemaSearchView extends Element {
     cinemaResult: Array<ICinemaSearchMovieResult>
+    myCity: string
 
     cinemaSearch() {
+        var city = "";
         var isChecked = (<HTMLInputElement>document.getElementById('cinema-option')).checked;
         if (isChecked){
-            getLocationFromGoogle();
+            var needsParsing = (<HTMLElement>document.getElementById('label-location-cinema')).textContent;
+            city = parse(needsParsing);
         }
         else{
-            var city = (<HTMLInputElement>document.getElementById("cinema-city-input")).value;
+            city = (<HTMLInputElement>document.getElementById("cinema-city-input")).value;
             city = city.trim();
-            if(city !== "" && city !== undefined && city !== null)
-                getLocation(city);
+        }
+        if(city !== "" && city !== undefined && city !== null){
+            getLocation(city);
         }
     }
-}
-
-var onSuccess = function(position) {
-    app.dispatch(cinemaMovieSearchLocation.payload({template:{longitude: position.coords.longitude, latitude: position.coords.latitude}}));
-}
-
-function onError(error){
-    alert('code: '    + error.code    + '\n' +
-        'message: ' + error.message + '\n');
 }
 
 function getLocation(value){
@@ -40,4 +35,11 @@ function getLocation(value){
 
 function getLocationFromGoogle(){
     app.dispatch(getLocationFromGoogleApi.payload({query: {key: mapKey}}));
+}
+
+function parse(needsParsing){
+    needsParsing = needsParsing.replace(/\s*$/, "");
+    needsParsing = needsParsing.trim();
+    var n = needsParsing.split(" ");
+    return n[n.length - 1];
 }

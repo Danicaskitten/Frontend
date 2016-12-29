@@ -4,7 +4,8 @@ import {IAdvancedSearchMovieResult} from '../ducks/advancedSearchDuck';
 
 export class AdvancedSearchService extends Service {
     selector = (state: IModel) => ({
-        result: state.advancedSearch.result
+        result: state.advancedSearch.result,
+        myCity: state.advancedSearch.myCity
     });
 }
 

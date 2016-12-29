@@ -24,7 +24,7 @@ export abstract class MovieResult extends Element {
         this.Runtime = opts.Runtime;
         this.Plot = opts.Plot;
         this.Genre = opts.Genre;
-        this.CinemaId = opts.CInemaId;
+        this.CinemaId = opts.CinemaId;
         this.Projections = [];
         this.hide = true;
     }
