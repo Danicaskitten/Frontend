@@ -20,6 +20,7 @@ import './movieResult';
 import './projections';
 import './reservationView';
 import './reservationHistoryView';
+import './cinemaResultAdvanced';
 
 @template("app", appService)
 export abstract class AppContainer extends Element {

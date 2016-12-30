@@ -3,6 +3,7 @@
         <div class="input-city">
             <label class="search-label">Use my location</label>
             <input type="checkbox" id="search-option" name="selector">
+            <label class="search-label" id="label-location-advanced" style="width: 200px; margin-left: 20px;">My location is: {myCity}<label>
         </div>
         <div class="input-city">
             <label class="search-label">In which city</label>
@@ -19,6 +20,6 @@
         </div>
     </div>
     <div class="result-container">
-        <search-result each={result} />
+        <search-result each={result} onclick="{changeVisibilityMovie}"/>
     </div>
 </advanced-search-view>    

@@ -6,9 +6,10 @@ import { searchReducer, searchMovieByTitle } from './ducks/searchDuck';
 import { appReducer,logoutUser, goToView, PageActive,readStorage} from './ducks/appDuck';
 import { dashboardReducer, getImageFromImdb, getMovies } from './ducks/dashboardDuck';
 import { chatReducer, startConversation, getChatMessages } from './ducks/chatDuck';
-import {advancedSearchReducer} from './ducks/advancedSearchDuck';
-import {cinemaSearchReducer} from './ducks/cinemaSearchDuck';
 import {reservationReducer} from './ducks/reservationDuck';
+import {advancedSearchReducer, getLocationForInfoAdvanced} from './ducks/advancedSearchDuck';
+import {cinemaSearchReducer, getLocationFromGoogleApi, getLocationForInfo} from './ducks/cinemaSearchDuck';
+import {mapKey} from './config';
 
 import IModel from './model';
 var timingInterval = undefined;
@@ -116,6 +117,7 @@ app.setRouter([
         address: "/advancedSearch",
         on: () => {
             app.dispatch(goToView.payload({ view: PageActive.AdvancedSearch }));
+            app.dispatch(getLocationForInfoAdvanced.payload({query: {key: mapKey}}));
             if(timingInterval)
                 clearInterval(timingInterval);
             timingInterval = undefined; 
@@ -125,6 +127,7 @@ app.setRouter([
         address: "/cinemaSearch",
         on: () => {
             app.dispatch(goToView.payload({ view: PageActive.CinemaSearch }));
+            app.dispatch(getLocationForInfo.payload({query: {key: mapKey}}));
             if(timingInterval)
                 clearInterval(timingInterval);
             timingInterval = undefined; 
