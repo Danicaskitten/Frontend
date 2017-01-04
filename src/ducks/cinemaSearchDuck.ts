@@ -181,6 +181,9 @@ export var cinemaSearchReducer = new Flux.Reducer<ICinemaSearchState>([
         action: getCityName.response,
         reduce: (state : ICinemaSearchState, payload: any) => {
             state.myCity = payload.address.city;
+            if(state.myCity === undefined) {
+                state.myCity = payload.address.town;
+            }
         }
     }
 ],initialState);

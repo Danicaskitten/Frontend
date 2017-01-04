@@ -119,6 +119,9 @@ export var advancedSearchReducer = new Flux.Reducer<IAdvancedSearchState>([
         action: getCityNameAdvanced.response,
         reduce: (state : IAdvancedSearchState, payload: any) => {
             state.myCity = payload.address.city;
+            if(state.myCity === undefined) {
+                state.myCity = payload.address.town;
+            }
         }
     },
     {
