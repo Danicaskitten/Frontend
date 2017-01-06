@@ -17,7 +17,7 @@ var timingInterval = undefined;
 var checkIfUserLoggedIn = () => {
             var token = localStorage.getItem('token');
             var expires = localStorage.getItem('expires')
-            if (localStorage.getItem("user") === null ||( token !== null && expires !== null && new Date(expires) < new Date())) {
+            if (localStorage.getItem("user") === null || localStorage.getItem("user") === "null" ||( token !== null && expires !== null && new Date(expires) < new Date())) {
                 app.redirect('/login');
             }
             else{

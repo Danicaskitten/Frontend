@@ -31,7 +31,8 @@ export interface IProjection {
     ImdbID: string,
     CinemaID: string,
     date: string,
-    Time: string
+    Time: string,
+    ProjectionID: string
 }
 
 export interface ICinemaSearchState{
@@ -52,8 +53,8 @@ var longitude = "";
 export const cinemaMovieSearchLocation = new Flux.RequestAction<{template:{longitude: string, latitude: string}}, any>("ADVANCE_SEARCH_CINEMA", "http://moviebot-rage.azurewebsites.net/api/v2/cinemas/location/{latitude}/{longitude}/", "GET");
 export const getLocationFromOSMCinema = new Flux.RequestAction<{template: {city: string}}, any>("GET_LOCATION_CINEMA", "http://nominatim.openstreetmap.org/search/{city}?format=json", "GET");
 export const getLocationFromGoogleApi = new Flux.RequestAction<{query: {key: string}}, any>("GET_LOCATION_GOOGLE", "https://www.googleapis.com/geolocation/v1/geolocate", "POST");
-export const getMovies = new Flux.RequestAction<{template: {cinemaId: string}}, any>("GET_MOVIES", "https://moviebot-rage.azurewebsites.net/api/v2/cinemas/id/{cinemaId}/movies?StartDate={StartDate}&EndDate={EndDate}", "GET");
-export const getProjections = new Flux.RequestAction<{template:{cinemaId: string, imdbId: string}}, any>("GET_PROJECTIONS", "http://moviebot-rage.azurewebsites.net/api/v2/projections/list/{imdbId}/{cinemaId}/", "GET");
+export const getMovies = new Flux.RequestAction<{template: {cinemaId: string},query:{ StartDate:string, EndDate:string}}, any>("GET_MOVIES", "http://moviebot-rage.azurewebsites.net/api/v2/cinemas/id/{cinemaId}/movies", "GET");
+export const getProjections = new Flux.RequestAction<{template:{cinemaId: string, imdbId: string},query:{ StartDate:string, EndDate:string}}, any>("GET_PROJECTIONS", "http://moviebot-rage.azurewebsites.net/api/v2/projections/list/{imdbId}/{cinemaId}", "GET");
 export const getLocationForInfo = new Flux.RequestAction<{query: {key: string}}, any>("GET_LOCATION_FOR_INFO", "https://www.googleapis.com/geolocation/v1/geolocate", "POST");
 export const getCityName = new Flux.RequestAction<{query: {format: string, lat: string, lon: string}}, any>("GET_CITY_NAME", "http://nominatim.openstreetmap.org/reverse", "GET");
 
