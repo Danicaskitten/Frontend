@@ -1,12 +1,12 @@
 import { Service } from 'corky/flux/service';
 import {IModel} from '../model';
-import {searchMovieTitleDummy,ISearchMovieResult} from '../ducks/searchDuck';
+import {ISearchMovie} from '../ducks/searchDuck';
 
 export class SearchService extends Service {
     selector =
     (state: IModel) => (
         {
-           result: state.search.result,
+           result: state.search.movieResult,
            active: <number> state.app.active
         }
     );
