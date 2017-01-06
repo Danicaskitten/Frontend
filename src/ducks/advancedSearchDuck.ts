@@ -37,7 +37,7 @@ var initialState : IAdvancedSearchState = {
     result: [],
     myCity: "",
     latitude: "",
-    longitude: "",
+    longitude: ""
 };
 
 var latitude = "";
