@@ -5,7 +5,9 @@ import {IAdvancedSearchMovieResult} from '../ducks/advancedSearchDuck';
 export class AdvancedSearchService extends Service {
     selector = (state: IModel) => ({
         result: state.advancedSearch.result,
-        myCity: state.advancedSearch.myCity
+        myCity: state.advancedSearch.myCity,
+        startDate: state.advancedSearch.startDate,
+        endDate: state.advancedSearch.endDate
     });
 }
 
