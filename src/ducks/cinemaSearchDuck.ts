@@ -38,25 +38,30 @@ export interface IProjection {
 export interface ICinemaSearchState{
     query: string,
     cinemaResult: Array<ICinemaSearchMovieResult>,
-    myCity: string
+    myCity: string,
+    cinemaName: string
 }
 
 var initialState : ICinemaSearchState = {
     query: "",
     cinemaResult: [],
-    myCity: ""
+    myCity: "",
+    cinemaName: ""
 };
 
 var latitude = "";
 var longitude = "";
+var pattern = "";
 
 export const cinemaMovieSearchLocation = new Flux.RequestAction<{template:{longitude: string, latitude: string}}, any>("ADVANCE_SEARCH_CINEMA", "http://moviebot-rage.azurewebsites.net/api/v2/cinemas/location/{latitude}/{longitude}/", "GET");
+export const cinemaSearchByNameAndLocation = new Flux.RequestAction<{template: {pattern: string, longitude: string, latitude: string}}, any>("CINEMA_SEARCH_NAME_LOCATION", "https://moviebot-rage.azurewebsites.net/api/v2/cinemas/name/{latitude}/{longitude}/{pattern}/", "GET");
 export const getLocationFromOSMCinema = new Flux.RequestAction<{template: {city: string}}, any>("GET_LOCATION_CINEMA", "http://nominatim.openstreetmap.org/search/{city}?format=json", "GET");
 export const getLocationFromGoogleApi = new Flux.RequestAction<{query: {key: string}}, any>("GET_LOCATION_GOOGLE", "https://www.googleapis.com/geolocation/v1/geolocate", "POST");
 export const getMovies = new Flux.RequestAction<{template: {cinemaId: string},query:{ StartDate:string, EndDate:string}}, any>("GET_MOVIES", "http://moviebot-rage.azurewebsites.net/api/v2/cinemas/id/{cinemaId}/movies", "GET");
 export const getProjections = new Flux.RequestAction<{template:{cinemaId: string, imdbId: string},query:{ StartDate:string, EndDate:string}}, any>("GET_PROJECTIONS", "http://moviebot-rage.azurewebsites.net/api/v2/projections/list/{imdbId}/{cinemaId}", "GET");
 export const getLocationForInfo = new Flux.RequestAction<{query: {key: string}}, any>("GET_LOCATION_FOR_INFO", "https://www.googleapis.com/geolocation/v1/geolocate", "POST");
 export const getCityName = new Flux.RequestAction<{query: {format: string, lat: string, lon: string}}, any>("GET_CITY_NAME", "http://nominatim.openstreetmap.org/reverse", "GET");
+export const setCinemaName = new Flux.Action<{ name: string }>("SET_NAME");
 
 export var cinemaSearchReducer = new Flux.Reducer<ICinemaSearchState>([
     {
@@ -73,6 +78,25 @@ export var cinemaSearchReducer = new Flux.Reducer<ICinemaSearchState>([
         }
     },
     {
+           action: cinemaSearchByNameAndLocation.request,
+           reduce: (state: ICinemaSearchState, payload: any) => {
+               payload.options = {};
+               payload.options["Content-Type"] = "application/x-www-form-urlencoded; charset=utf-8";
+           }
+       },
+    {
+        action: cinemaSearchByNameAndLocation.response,
+        reduce: (state : ICinemaSearchState, payload: any) => {
+            state.cinemaResult = payload.Data;
+        }
+    },
+    {
+        action: setCinemaName,
+        reduce: (state: ICinemaSearchState, payload: { name: string }) => {
+            state.cinemaName = payload.name;
+        }
+    },
+    {
         action: getLocationFromOSMCinema.request,
         reduce: (state : ICinemaSearchState, payload: any) => {
             payload.options = {};
@@ -84,7 +108,13 @@ export var cinemaSearchReducer = new Flux.Reducer<ICinemaSearchState>([
         reduce: (state : ICinemaSearchState, payload: any) => {
             longitude = payload[0].lon; 
             latitude = payload[0].lat;
-            getLocation();
+            pattern = state.cinemaName;
+            if (pattern !== undefined && pattern !== "" && pattern !== null) {
+                getByName();
+            }
+            else {
+                getLocation();
+            }
         }
     },
     {
@@ -99,7 +129,13 @@ export var cinemaSearchReducer = new Flux.Reducer<ICinemaSearchState>([
         reduce: (state : ICinemaSearchState, payload: any) => {
             longitude = payload.location.lng; 
             latitude = payload.location.lat;
-            getLocation();
+            pattern = state.cinemaName;
+            if (pattern !== undefined && pattern !== "" && pattern !== null) {
+                getByName();
+            }
+            else {
+                getLocation();
+            }
         }
     },
     {
@@ -182,6 +218,9 @@ export var cinemaSearchReducer = new Flux.Reducer<ICinemaSearchState>([
         action: getCityName.response,
         reduce: (state : ICinemaSearchState, payload: any) => {
             state.myCity = payload.address.city;
+            if(state.myCity === undefined) {
+                state.myCity = payload.address.town;
+            }
         }
     }
 ],initialState);
@@ -189,6 +228,12 @@ export var cinemaSearchReducer = new Flux.Reducer<ICinemaSearchState>([
 function getLocation(){
     setTimeout(function(){
         app.dispatch(cinemaMovieSearchLocation.payload({template:{longitude: longitude, latitude: latitude}}));
+    }, 3000);
+}
+
+function getByName(){
+    setTimeout(function(){
+        app.dispatch(cinemaSearchByNameAndLocation.payload({template:{pattern: pattern, longitude: longitude, latitude: latitude}}));
     }, 3000);
 }
 
