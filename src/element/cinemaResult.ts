@@ -36,7 +36,7 @@ export abstract class SearchResult extends Element {
     changeVisibility(event){
         this.hide = !this.hide;
         if(!this.hide){
-            app.dispatch(getMovies.payload({ template: { cinemaId: this.CinemaID }}));
+            app.dispatch(getMovies.payload({ template: { cinemaId: this.CinemaID},query:{StartDate: "12/10/2016", EndDate: "12/14/2017"}}));
         }
         else{
             this.Movies.length = 0;

@@ -18,6 +18,8 @@ import './cinemaSearchView';
 import './cinemaResult';
 import './movieResult';
 import './projections';
+import './reservationView';
+import './reservationHistoryView';
 import './cinemaResultAdvanced';
 
 @template("app", appService)
