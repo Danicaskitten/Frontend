@@ -48,6 +48,16 @@ app.setRouter([
         before: checkIfUserLoggedIn
     }),
      new Route({
+        address: "/reserve",
+        on: () => {
+            app.dispatch(goToView.payload({ view: PageActive.Reservation }));
+            if (timingInterval)
+                clearInterval(timingInterval);
+            timingInterval = undefined;
+        },
+        before: checkIfUserLoggedIn
+    }),
+     new Route({
         address: "/reservation",
         on: () => {
             app.dispatch(goToView.payload({ view: PageActive.Reservation}));

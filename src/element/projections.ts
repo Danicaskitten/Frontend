@@ -4,10 +4,12 @@ import reservationService from '../service/reservationService';
 
 @template("projection-result", reservationService)
 export abstract class ProjectionResult extends Element {
-    abstract reserve(projectionId: string);
-    reserveProjection(id){
-            return function(event){
-            this.reserve(id);
+ 
+    abstract reserve(city: string, cinema: string, date: Date, movie: string, projectionId: string,time:string);
+    reserveProjection(city, cinema, date, movie, projectionId,time){
+        return function(event){
+            this.reserve(city, cinema, date, movie, projectionId,time);
+            this.router.redirect("/reserve");
         }
     }
 }

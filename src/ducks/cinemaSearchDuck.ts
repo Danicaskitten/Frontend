@@ -23,16 +23,21 @@ export interface IMovieResponse {
     Plot: string,
     Genre: string,
     CinemaId: string,
+    cinemaName: string,
+    city: string,
     Projections: Array<IProjection>
 }
 
 
 export interface IProjection {
     ImdbID: string,
+    movieName: string,
+    cinemaName: string,
     CinemaID: string,
     date: string,
     Time: string,
-    ProjectionID: string
+    ProjectionID: string,
+    City: string
 }
 
 export interface ICinemaSearchState{
@@ -158,6 +163,8 @@ export var cinemaSearchReducer = new Flux.Reducer<ICinemaSearchState>([
                     element.Movies = payload.Data;
                     element.Movies.forEach(movie => {
                         movie.CinemaId = element.CinemaID;
+                        movie.cinemaName = element.Name;
+                        movie.city = element.City;
                     })
                     element.mov = false;
                 }
@@ -185,6 +192,9 @@ export var cinemaSearchReducer = new Flux.Reducer<ICinemaSearchState>([
                             movie.Projections = payload.Data;
                             for(var i = 0; i < payload.Data.length; i++){
                                 movie.Projections[i].date = payload.Data[i].Date;
+                                movie.Projections[i].cinemaName = movie.cinemaName;
+                                movie.Projections[i].movieName = movie.Title;
+                                movie.Projections[i].City = movie.city;
                             }
                         }
                     })
