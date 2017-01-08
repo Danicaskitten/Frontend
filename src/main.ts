@@ -6,8 +6,10 @@ import { searchReducer, searchMovieByTitle } from './ducks/searchDuck';
 import { appReducer,logoutUser, goToView, PageActive,readStorage} from './ducks/appDuck';
 import { dashboardReducer, getImageFromImdb, getMovies } from './ducks/dashboardDuck';
 import { chatReducer, startConversation, getChatMessages } from './ducks/chatDuck';
+import {reservationReducer} from './ducks/reservationDuck';
 import {advancedSearchReducer, getLocationForInfoAdvanced} from './ducks/advancedSearchDuck';
 import {cinemaSearchReducer, getLocationFromGoogleApi, getLocationForInfo} from './ducks/cinemaSearchDuck';
+import {getUserReservationHistory} from './ducks/reservationDuck';
 import {mapKey} from './config';
 
 import IModel from './model';
@@ -16,7 +18,7 @@ var timingInterval = undefined;
 var checkIfUserLoggedIn = () => {
             var token = localStorage.getItem('token');
             var expires = localStorage.getItem('expires')
-            if (localStorage.getItem("user") === null ||( token !== null && expires !== null && new Date(expires) < new Date())) {
+            if (localStorage.getItem("user") === null || localStorage.getItem("user") === "null" ||( token !== null && expires !== null && new Date(expires) < new Date())) {
                 app.redirect('/login');
             }
             else{
@@ -31,10 +33,42 @@ export var app = new App<IModel>(
         dashboard: dashboardReducer,
         search: searchReducer,
         advancedSearch: advancedSearchReducer,
-        cinemaSearch: cinemaSearchReducer
+        cinemaSearch: cinemaSearchReducer,
+        reservation: reservationReducer
     });
 
 app.setRouter([
+     new Route({
+        address: "/reservationHistory",
+        on: () => {
+            app.dispatch(goToView.payload({ view: PageActive.ReservationHistory }));            
+            app.dispatch(getUserReservationHistory.payload({options:{}}));
+            if (timingInterval)
+                clearInterval(timingInterval);
+            timingInterval = undefined;
+        },
+        before: checkIfUserLoggedIn
+    }),
+     new Route({
+        address: "/reserve",
+        on: () => {
+            app.dispatch(goToView.payload({ view: PageActive.Reservation }));
+            if (timingInterval)
+                clearInterval(timingInterval);
+            timingInterval = undefined;
+        },
+        before: checkIfUserLoggedIn
+    }),
+     new Route({
+        address: "/reservation",
+        on: () => {
+            app.dispatch(goToView.payload({ view: PageActive.Reservation}));
+            if (timingInterval)
+                clearInterval(timingInterval); 
+            timingInterval = undefined;
+        },
+        before: checkIfUserLoggedIn
+    }),
     new Route({
         address: "/dashboard",
         on: () => {

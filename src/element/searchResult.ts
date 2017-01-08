@@ -37,10 +37,11 @@ export abstract class SearchResult extends Element {
     }
 
     changeVisibilityMovie(event){
+        event.stopPropagation();
         this.hide = !this.hide;
         if(!this.hide){
             this.cin = true;
-            app.dispatch(getCinemasFromMovie.payload({ template: {imdbId: this.ImdbID, latitude: "", longitude: ""}}));
+            app.dispatch(getCinemasFromMovie.payload({ template: {imdbId: this.ImdbID, latitude: "", longitude: ""},query:{EndDate:"", StartDate:""}}));
         }
         else{
             this.Cinemas.length = 0;

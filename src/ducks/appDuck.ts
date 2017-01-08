@@ -1,6 +1,7 @@
 import Flux from 'corky/flux';
 import {app} from '../main';
 
+
 export enum PageActive {
     None,
     Chat,
@@ -10,7 +11,9 @@ export enum PageActive {
     Register,
     Login,
     AdvancedSearch,
-    CinemaSearch
+    CinemaSearch,
+    Reservation,
+    ReservationHistory
 }
 
 export enum Genres{
@@ -39,6 +42,7 @@ export interface IChoosenGenres {
     genre: Genres
 }
 
+export const confirmReservation = new Flux.Action<{ confirm: boolean }>("CONFIRM_RESERVATION");
 var initialState: IAppState = {
     active: PageActive.None,
     user: {
@@ -97,6 +101,7 @@ export const changeGenres = new Flux.Action<Array<number>>("CHANGE_GENRES");
 
 
 export var appReducer = new Flux.Reducer<IAppState>([
+    
     {
         action: logoutUser,
         reduce:(state: IAppState, payload: any) => {

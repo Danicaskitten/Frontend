@@ -3,7 +3,7 @@ import template from '../template';
 import cinemaSearchService from '../service/cinemaSearchService';
 import {ICinemaSearchMovieResult} from '../ducks/cinemaSearchDuck';
 import {app} from '../main';
-import {cinemaMovieSearchLocation, getLocationFromOSMCinema, getLocationFromGoogleApi} from '../ducks/cinemaSearchDuck';
+import {cinemaMovieSearchLocation, getLocationFromOSMCinema, getLocationFromGoogleApi, setCinemaName} from '../ducks/cinemaSearchDuck';
 import {mapKey} from '../config';
 
 
@@ -11,9 +11,14 @@ import {mapKey} from '../config';
 export abstract class CinemaSearchView extends Element {
     cinemaResult: Array<ICinemaSearchMovieResult>
     myCity: string
+    cinemaName: string
 
     cinemaSearch() {
         var city = "";
+        var cinemaName = "";
+        cinemaName = (<HTMLInputElement>document.getElementById("cinema-name-input")).value;
+        cinemaName = cinemaName.trim();
+        app.dispatch(setCinemaName.payload({name: cinemaName}));
         var isChecked = (<HTMLInputElement>document.getElementById('cinema-option')).checked;
         if (isChecked){
             var needsParsing = (<HTMLElement>document.getElementById('label-location-cinema')).textContent;

@@ -1,0 +1,124 @@
+<reservation-view>
+    <span>Reservation for <b>{reservation.movie}</b> </span>
+    <span>In <b>{reservation.cinema}, {reservation.city} @{reservation.date}</b> </span>
+    <span>Free seats: {reservation.freeSeats}</span>
+    <label for="quantity">Seats to reserve: </label>
+    <input id="reservation-seats" oninput={seats} type="number" name="quantity" min="1" max="{reservation.freeSeats}">
+    <div class="too-much-seats-error" show={(reservation.freeSeats - reservation.numberOfSeats)<0}>
+        <i class="fa fa-exclamation" aria-hidden="true" style="font-size: 20px;margin-right: 5px;"></i>
+        Please input a smaller number then the maximum number of available seats.
+    </div>
+     <div class="too-much-seats-error" show={error !== ""}>
+        <i class="fa fa-exclamation" aria-hidden="true" style="font-size: 20px;margin-right: 5px;"></i>
+        {error}
+    </div>
+    <div class="row">
+        <button onclick="{set(0,0)}" class={active: reservation.positionVertical===0 && reservation.positionHorisontal==0}>Left</button>
+        <button onclick="{set(2,0)}" class={active: reservation.positionVertical===2 && reservation.positionHorisontal==0}>Center</button>
+        <button onclick="{set(1,0)}" class={active: reservation.positionVertical===1 && reservation.positionHorisontal==0}>Right</button> 
+    </div>
+    <div class="row">
+        <button onclick="{set(0,2)}" class={active: reservation.positionVertical===0 && reservation.positionHorisontal==2}>Left</button>
+        <button onclick="{set(2,2)}" class={active: reservation.positionVertical===2 && reservation.positionHorisontal==2}>Center</button>
+        <button onclick="{set(1,2)}" class={active: reservation.positionVertical===1 && reservation.positionHorisontal==2}>Right</button> 
+    </div>
+    <div class="row">
+        <button onclick="{set(0,1)}" class={active: reservation.positionVertical===0 && reservation.positionHorisontal==1}>Left</button>
+        <button onclick="{set(2,1)}" class={active: reservation.positionVertical===2 && reservation.positionHorisontal==1}>Center</button>
+        <button onclick="{set(1,1)}" class={active: reservation.positionVertical===1 && reservation.positionHorisontal==1}>Right</button> 
+    </div>
+    <div class="screen-position">Screen position </div>
+    <button onclick="{confirm(true)}" class="confirm {disabled:((reservation.freeSeats - reservation.numberOfSeats)<0)|| error!==""} ">Confirm</button>
+    <button onclick="{confirm(false)}" class="cancel">Cancel</button>
+    <style scoped>
+        .too-much-seats-error{
+            padding-left: 10px;
+            padding-right: 15px;
+            color: #EC644B;
+            padding-bottom: 15px;
+            font-size: 16px;
+        }
+        label{
+            font-size: 20px;
+            margin: 10px;
+            margin-top: 5px;
+        } 
+        .row:first-child{
+            margin-top:15px;
+        }
+        input{
+            font-size: 15px;
+        }
+        span:first-child{
+            padding-top: 20px;
+            padding-bottom: 20px;
+            color: white;
+            background: #252928;
+        }
+        span b{
+            font-size: 20px;
+        }
+       span{
+            display: block;
+            padding: 10px;
+            font-size: 20px;
+       }
+       button.active{
+            background: #B05F6D !important;
+            color: white;
+       }
+       .screen-position{
+            margin-left: auto;
+            margin-right: auto;
+            width: 60%;
+            padding: 15px;
+            text-align: center;
+            background-color: #B05F6D;
+            color: white;
+            font-size: 25px;
+       }
+       div button{
+           width: 32.33333%;
+            padding: 10px;
+            margin-left: auto;
+            border: 0;
+            margin-right: auto;
+            margin: 0;
+       }
+       .row{
+           padding: 10px;
+       }
+       .confirm{
+            bottom: 0;
+            position: absolute;
+            margin-bottom: 30px;
+            margin-left: 10%;
+            margin-right: 10%;
+            width: 40%;
+            border: 0;
+            color:#B05F6D;
+            padding: 15px;
+            font-weight: 700;
+            font-size: 20px;
+       }
+       .cancel{
+            bottom: 0;
+            position: absolute;
+            margin-bottom: 30px;
+            margin-left: calc(50% + 5px);
+            margin-right: 10%;
+            width: 40%;
+            border: 0;
+            background: #EC644B;
+            padding: 15px;
+            color: white;
+            font-weight: 300;
+            font-size: 20px;
+       }
+       .disabled{
+           pointer-events: none;
+           opacity: 0.7;
+           color: #EC644B;
+       }
+   </style>
+</reservation-view>
