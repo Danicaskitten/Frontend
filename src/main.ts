@@ -3,7 +3,7 @@ import { mountToDom } from 'corky/tags/mount';
 import { Route } from 'corky/routing/route'
 import { AppContainer } from './element/appContainer';
 import { searchReducer, searchMovieByTitle } from './ducks/searchDuck';
-import { appReducer,logoutUser, goToView, PageActive,readStorage} from './ducks/appDuck';
+import { appReducer,logoutUser, goToView, PageActive,readStorage,loadUserGenres} from './ducks/appDuck';
 import { dashboardReducer, getImageFromImdb, getMovies } from './ducks/dashboardDuck';
 import { chatReducer, startConversation, getChatMessages } from './ducks/chatDuck';
 import {reservationReducer} from './ducks/reservationDuck';
@@ -96,6 +96,7 @@ app.setRouter([
         address: "/profile",
         on: () => {
             app.dispatch(goToView.payload({ view: PageActive.Profile }));
+            app.dispatch(loadUserGenres.payload({}));
             if (timingInterval)
                 clearInterval(timingInterval);
             timingInterval = undefined;
