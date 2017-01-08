@@ -24,7 +24,8 @@ export interface ICinemaSearchProjectionsResult{
     Province: string,
     City: string,
     Projections: Array<IProjection>,
-    mov: boolean
+    mov: boolean,
+    movieName: string
 }
 export interface IAdvancedArrayResponse {
     Data: Array<{
@@ -173,6 +174,9 @@ export var advancedSearchReducer = new Flux.Reducer<IAdvancedSearchState>([
                             cinema.Projections = payload.Data;
                             for(var i = 0; i < payload.Data.length; i++){
                                 cinema.Projections[i].date = payload.Data[i].Date;
+                                cinema.Projections[i].cinemaName = cinema.Name;
+                                cinema.Projections[i].City = cinema.City;
+                                cinema.Projections[i].movieName = cinema.movieName;
                             }
                         }
                     })
@@ -202,6 +206,9 @@ export var advancedSearchReducer = new Flux.Reducer<IAdvancedSearchState>([
                 if(element.cin == true){
                     element.Cinemas = payload.Data;
                     element.cin = false;
+                    element.Cinemas.forEach(cinema => {
+                        cinema.movieName = element.Title;
+                    })
                 }
                 else if(element.Cinemas != undefined){
                     element.Cinemas.length = 0;
