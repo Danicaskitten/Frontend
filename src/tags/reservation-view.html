@@ -8,6 +8,10 @@
         <i class="fa fa-exclamation" aria-hidden="true" style="font-size: 20px;margin-right: 5px;"></i>
         Please input a smaller number then the maximum number of available seats.
     </div>
+     <div class="too-much-seats-error" show={error !== ""}>
+        <i class="fa fa-exclamation" aria-hidden="true" style="font-size: 20px;margin-right: 5px;"></i>
+        {error}
+    </div>
     <div class="row">
         <button onclick="{set(0,0)}" class={active: reservation.positionVertical===0 && reservation.positionHorisontal==0}>Left</button>
         <button onclick="{set(2,0)}" class={active: reservation.positionVertical===2 && reservation.positionHorisontal==0}>Center</button>
@@ -24,7 +28,7 @@
         <button onclick="{set(1,1)}" class={active: reservation.positionVertical===1 && reservation.positionHorisontal==1}>Right</button> 
     </div>
     <div class="screen-position">Screen position </div>
-    <button onclick="{confirm(true)}" class="confirm {disabled: (reservation.freeSeats - reservation.numberOfSeats)<0} ">Confirm</button>
+    <button onclick="{confirm(true)}" class="confirm {disabled:((reservation.freeSeats - reservation.numberOfSeats)<0)|| error!==""} ">Confirm</button>
     <button onclick="{confirm(false)}" class="cancel">Cancel</button>
     <style scoped>
         .too-much-seats-error{

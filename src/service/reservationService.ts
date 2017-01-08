@@ -1,6 +1,6 @@
 import { Service } from 'corky/flux/service';
 import { IModel } from '../model';
-import { setReservation,confirmReservation,setPosition,setSeatNumber } from '../ducks/reservationDuck';
+import { setReservation,confirmReservation,setPosition,setSeatNumber,reservation,completeReservation } from '../ducks/reservationDuck';
 
 export class ReservationService extends Service {
     selector =
@@ -16,6 +16,7 @@ export class ReservationService extends Service {
                     date: reservation.date
                 }
             }),
+            error : state.reservation.errorMessage,
             reservation: state.reservation.reservation ?
                 {
                     city: state.reservation.reservation.city,
@@ -50,6 +51,10 @@ export class ReservationService extends Service {
             movie: movie,
             projectionId: projectionId,
             time: time
+        }),
+        completeReservation:() => completeReservation.payload({template:{},options:{}}),
+        reservationProcess: (projectionId : string) => reservation.payload({
+          template:{  ProjectionId: projectionId},options: {}, payload2: {template:{  ProjectionId: projectionId},options: {}}
         }),
         setPosition:(verticalSeat: number, horizontalSeat: number)=> setPosition.payload({vertical:verticalSeat,horizontal:horizontalSeat}),
         confirmReservation:(confirm: boolean)=> confirmReservation.payload({confirm: confirm}),

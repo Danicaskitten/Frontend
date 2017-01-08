@@ -24,6 +24,8 @@ var ConditionalRequestAction = function () {
         this.request = new _action.Action(type + '.REQUEST');
         this.response = new _action.Action(type + '.RESPONSE');
         this.error = new _action.Action(type + '.ERROR');
+        this.callback = callback;
+        this.requestAction = requestAction;
        
     }
 
@@ -86,14 +88,16 @@ var ConditionalRequestAction = function () {
                         data.url = data.url.replace(key, data.template[value]);
                     }
                 }
-
+                data.callback = _this.callback;
+                data.payload2 = _payload.payload2;
+                data.request = _this.requestAction;
                 request(data.requestType, data.url).send(_payload.data).query(_payload.query).set(data.options).end(function (err, res) {
                     if (err !== null) {
                         dispatch(_this.error.payload(err));
                     } else {
-                        if (callback(res.body) === true) {
+                        if (data.callback(res.body) === true) {
                             dispatch(_this.response.payload(res.body));
-                            dispatch(requestAction.payload(_payload.payload2));
+                            dispatch(data.request.payload(data.payload2));
                         }
                     }
                 });
