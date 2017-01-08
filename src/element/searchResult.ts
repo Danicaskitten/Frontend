@@ -4,7 +4,7 @@ import {app} from '../main';
 import {ICinemaSearchMovieResult} from '../ducks/cinemaSearchDuck';
 import {getCinemasFromMovie} from '../ducks/advancedSearchDuck';
 
-
+@template("imdb-search-result", null)
 @template("search-result", null)
 export abstract class SearchResult extends Element {
     Title: string;
@@ -37,10 +37,11 @@ export abstract class SearchResult extends Element {
     }
 
     changeVisibilityMovie(event){
+        event.stopPropagation();
         this.hide = !this.hide;
         if(!this.hide){
             this.cin = true;
-            app.dispatch(getCinemasFromMovie.payload({ template: {imdbId: this.ImdbID, latitude: "", longitude: ""}}));
+            app.dispatch(getCinemasFromMovie.payload({ template: {imdbId: this.ImdbID, latitude: "", longitude: ""},query:{EndDate:"", StartDate:""}}));
         }
         else{
             this.Cinemas.length = 0;

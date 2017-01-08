@@ -1,0 +1,12 @@
+<imdb-search-result>
+    <img src={Poster} />
+    <div class="data-container" onclick={toggleShowMore}>
+        <i class="fa fa-star fa" aria-hidden="true">{imdbRating}</i>
+        <h5> {Title}</h5>
+        <span>{Genre}</span>        
+        <span>{Runtime}</span>
+        <div show={show}>
+        <span>{Plot}</span>
+        </div>
+    </div>  
+</imdb-search-result> 

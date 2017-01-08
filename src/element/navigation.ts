@@ -41,6 +41,10 @@ export abstract class Navigation extends Element implements INavigation {
         this.router.redirect('/logout');
         this.closeMenus();
     }
+    redirectToReservationHistory(){
+        this.router.redirect('/reservationHistory');
+        this.closeMenus();
+    }
 
     redirectToSearch() {
         this.router.redirect('/search');

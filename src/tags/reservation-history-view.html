@@ -1,0 +1,24 @@
+<reservation-history-view>
+    <h3>Your previous reservations</h3>
+    <div class="scrollable">
+    <table class="layout display responsive-table" style="width:100%">
+        <thead>
+        <tr> 
+            <th>Date</th>
+            <th>City - Cinema</th>
+            <th>Movie</th>
+            <th>No. of seats</th>
+            <th>Total cost</th> 
+        </tr>
+        </thead>   
+        <tr each={reservations}>
+            <td class="daterow">{date}</td>
+            <td>{city} - {cinema}</td>
+            <td>{movie}</td>
+            <td>{seatNumber}</td>
+            <td>{seatNumber * pricePerTicket}</td>
+        </tr>
+    </table>  
+    </div>
+   
+</reservation-history-view>
