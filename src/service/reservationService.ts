@@ -1,6 +1,6 @@
 import { Service } from 'corky/flux/service';
 import { IModel } from '../model';
-import { setReservation,confirmReservation,setPosition,setSeatNumber,reservation,completeReservation } from '../ducks/reservationDuck';
+import { setReservation,cancelReservation,confirmReservation,setPosition,setSeatNumber,reservation,completeReservation } from '../ducks/reservationDuck';
 
 export class ReservationService extends Service {
     selector =
@@ -52,6 +52,7 @@ export class ReservationService extends Service {
             projectionId: projectionId,
             time: time
         }),
+        cancelReservation:() => cancelReservation.payload({template:{},options:{}}),
         completeReservation:() => completeReservation.payload({template:{},options:{}}),
         reservationProcess: (projectionId : string) => reservation.payload({
           template:{  ProjectionId: projectionId},options: {}, payload2: {template:{  ProjectionId: projectionId},options: {}}

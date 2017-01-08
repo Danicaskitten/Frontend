@@ -9,6 +9,7 @@ import { chatReducer, startConversation, getChatMessages } from './ducks/chatDuc
 import {reservationReducer} from './ducks/reservationDuck';
 import {advancedSearchReducer, getLocationForInfoAdvanced} from './ducks/advancedSearchDuck';
 import {cinemaSearchReducer, getLocationFromGoogleApi, getLocationForInfo} from './ducks/cinemaSearchDuck';
+import {getUserReservationHistory} from './ducks/reservationDuck';
 import {mapKey} from './config';
 
 import IModel from './model';
@@ -40,7 +41,8 @@ app.setRouter([
      new Route({
         address: "/reservationHistory",
         on: () => {
-            app.dispatch(goToView.payload({ view: PageActive.ReservationHistory }));
+            app.dispatch(goToView.payload({ view: PageActive.ReservationHistory }));            
+            app.dispatch(getUserReservationHistory.payload({options:{}}));
             if (timingInterval)
                 clearInterval(timingInterval);
             timingInterval = undefined;
@@ -62,7 +64,7 @@ app.setRouter([
         on: () => {
             app.dispatch(goToView.payload({ view: PageActive.Reservation}));
             if (timingInterval)
-                clearInterval(timingInterval);
+                clearInterval(timingInterval); 
             timingInterval = undefined;
         },
         before: checkIfUserLoggedIn

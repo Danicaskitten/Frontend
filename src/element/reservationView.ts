@@ -8,6 +8,7 @@ export abstract class ReservationView extends Element {
     abstract setPosition(verticalSeat: number, horizontalSeat: number);
     abstract confirmReservation(confirm: boolean);
     abstract completeReservation();
+    abstract cancelReservation();
     abstract setSeatNumber(seats: number);
 
     set(ver,hor){
@@ -26,7 +27,16 @@ export abstract class ReservationView extends Element {
     confirm(value){
         return function(e){
             this.confirmReservation(value);
-            this.completeReservation();
+            if(value === true){                
+                this.completeReservation();
+                 this.router.redirect('/reservationHistory')
+            }
+            else{
+                this.cancelReservation();
+                 this.router.redirect('/dashboard')
+
+            }
+            
         }
     }
 }

@@ -101,15 +101,7 @@ export const changeGenres = new Flux.Action<Array<number>>("CHANGE_GENRES");
 
 
 export var appReducer = new Flux.Reducer<IAppState>([
-     {
-        action: confirmReservation,
-        reduce: (state: IAppState, payload:{confirm: boolean})=>{    
-            if(payload.confirm)
-                state.active = PageActive.ReservationHistory;
-            else
-                state.active = PageActive.Dashboard;
-        }
-    }, 
+    
     {
         action: logoutUser,
         reduce:(state: IAppState, payload: any) => {

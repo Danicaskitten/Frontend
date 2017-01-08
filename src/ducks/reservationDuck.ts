@@ -14,7 +14,14 @@ export enum ISeatPositionVertical {
     Down,
     Middle
 }
-
+export interface IReservationHistory {
+    city: string,
+    cinema: string,
+    date: string,
+    movie: string,
+    numberOfSeats: number,
+    pricePerSeat: number
+}
 export interface IReservation {
     city: string,
     cinema: string,
@@ -36,12 +43,25 @@ export interface ISeatNumberPayload {
 }
 
 export interface IReservationState {
-    reservations: Array<IReservation>,
+    reservations: Array<IReservationHistory>,
     token: string,
     username: string,
     reservation: IReservation,
     errorMessage: string;
 }
+
+export interface IHistoryResponse {
+    Quantity: number,
+    Date: string,
+    Time: string,
+    Status: string,
+    Cinema: string,
+    Movie: string,
+    City: string
+}
+
+export const getUserReservationHistory = new Flux.RequestAction<{ options: {} }, { Data: Array<IHistoryResponse> }>
+    ("GET_USER_RESERVATION_HISTORY", "http://moviebot-rage.azurewebsites.net/api/v2/reservations/getByUserId", "GET");
 export const setSeatNumber = new Flux.Action<{ seats: number }>("SET_SEAT_NUMBER");
 export const setPosition = new Flux.Action<{ vertical: number, horizontal: number }>("SET_POSITION");
 export const confirmReservation = new Flux.Action<{ confirm: boolean }>("CONFIRM_RESERVATION");
@@ -50,8 +70,12 @@ export const setReservation = new Flux.Action<{ city: string, cinema: string, da
 export const addReservation = new Flux.RequestAction<{ template: { ProjectionId: string }, options: any }, any>
     ("ADD_RESERVATION", "http://moviebot-rage.azurewebsites.net/api/v2/reservations/add/{ProjectionId}", "POST");
 
-export const completeReservation = new Flux.RequestAction<{template:any,options:any},any>
-    ("FINALIZE_RESERVATION","http://moviebot-rage.azurewebsites.net/api/v2/reservations/complete/{reservationId}/{quantity}","PUT");
+export const completeReservation = new Flux.RequestAction<{ template: any, options: any }, any>
+    ("FINALIZE_RESERVATION", "http://moviebot-rage.azurewebsites.net/api/v2/reservations/complete/{reservationId}/{quantity}", "PUT");
+
+export const cancelReservation = new Flux.RequestAction<{ template: any, options: any }, any>(
+    "CANCEL_RESERVATION", "http://moviebot-rage.azurewebsites.net/api/v2/reservations/cancel/{reservationId}", "PUT"
+);
 
 export const reservation = new ConditionalRequestAction<{ template: { ProjectionId: string }, options: any, payload2: { template: { ProjectionId: string }, options: any } }, any>
     ("CHECK_AND_RESERVE", "http://moviebot-rage.azurewebsites.net/api/v2/reservations/getFreeSeats/{ProjectionId}",
@@ -64,74 +88,46 @@ var initialState: IReservationState = {
     username: "",
     token: "",
     errorMessage: "",
-    reservations: [
-        {
-            reservationId:0,
-            city: "Zagreb",
-            cinema: "Cinestar Branimir centar",
-            date: "01-01-2017 17h",
-            movie: "Avengers 3",
-            projectionId: 0,
-            numberOfSeats: 5,
-            positionVertical: ISeatPositionVertical.Down,
-            positionHorisontal: ISeatPositionHorizontal.Center,
-            pricePerSeat: 3,
-            freeSeats: 0
-
-        },
-        {
-            reservationId:0,
-            city: "Milano",
-            cinema: "Cinema Orfeo",
-            date: "01-01-2017 17h",
-            movie: "Avengers 2",
-            numberOfSeats: 10,
-            projectionId: 0,
-            positionVertical: ISeatPositionVertical.Down,
-            positionHorisontal: ISeatPositionHorizontal.Center,
-            pricePerSeat: 10,
-            freeSeats: 0
-
-        },
-        {
-            reservationId:0,
-            city: "Split",
-            cinema: "Cinestar Joker",
-            date: "01-01-2017 17h",
-            movie: "Dr. Strange",
-            projectionId: 0,
-            numberOfSeats: 12,
-            positionVertical: ISeatPositionVertical.Down,
-            positionHorisontal: ISeatPositionHorizontal.Center,
-            pricePerSeat: 3,
-            freeSeats: 0
-
-        },
-        {
-            reservationId:0,
-            city: "Rome",
-            cinema: "Cinema Orfeo in Rome",
-            date: "01-01-2017 17h",
-            movie: "Avengers 1",
-            projectionId: 0,
-            numberOfSeats: 1,
-            positionVertical: ISeatPositionVertical.Down,
-            positionHorisontal: ISeatPositionHorizontal.Center,
-            pricePerSeat: 10,
-            freeSeats: 0
-
-        }
-    ]
+    reservations: []
 }
 
 export var reservationReducer = new Flux.Reducer<IReservationState>([
-     {
+    {
+        action: cancelReservation.request,
+        reduce: (state: IReservationState, payload: any) => {
+            payload.options = {};
+            payload.options["Content-Type"] = "application/x-www-form-urlencoded; charset=utf-8";
+            state.errorMessage = "";
+            payload.template = { reservationId: state.reservation.reservationId };
+            payload.options["Authorization"] = "Bearer " + state.token;
+        }
+    },
+    {
+        action: cancelReservation.response,
+        reduce: (state: IReservationState, payload: any) => {
+            console.log("Successfully canceled");
+            state.reservation = {
+                cinema: "",
+                city: "",
+                date: "",
+                movie: "",
+                projectionId: -1,
+                pricePerSeat: 0,
+                freeSeats: 0,
+                numberOfSeats: 0,
+                positionVertical: 0,
+                positionHorisontal: 0,
+                reservationId: -1
+            };
+        }
+    },
+    {
         action: completeReservation.request,
         reduce: (state: IReservationState, payload: any) => {
             payload.options = {};
             payload.options["Content-Type"] = "application/x-www-form-urlencoded; charset=utf-8";
             state.errorMessage = "";
-            payload.template = { quantity: state.reservation.numberOfSeats ,reservationId: state.reservation.reservationId};
+            payload.template = { quantity: state.reservation.numberOfSeats, reservationId: state.reservation.reservationId };
             payload.options["Authorization"] = "Bearer " + state.token;
         }
     },
@@ -139,7 +135,7 @@ export var reservationReducer = new Flux.Reducer<IReservationState>([
         action: completeReservation.response,
         reduce: (state: IReservationState, payload: any) => {
             console.log("Successfully reserved");
-            if (payload.confirm && (state.reservation.freeSeats - state.reservation.numberOfSeats) >= 0)
+            if ((state.reservation.freeSeats - state.reservation.numberOfSeats) >= 0)
                 state.reservations.push(state.reservation);
             state.reservation = {
                 cinema: "",
@@ -152,7 +148,7 @@ export var reservationReducer = new Flux.Reducer<IReservationState>([
                 numberOfSeats: 0,
                 positionVertical: 0,
                 positionHorisontal: 0,
-                reservationId:-1
+                reservationId: -1
             };
         }
     },
@@ -173,7 +169,7 @@ export var reservationReducer = new Flux.Reducer<IReservationState>([
     {
         action: confirmReservation,
         reduce: (state: IReservationState, payload: { confirm: boolean }) => {
-            
+
         }
     },
     {
@@ -258,6 +254,31 @@ export var reservationReducer = new Flux.Reducer<IReservationState>([
         action: addReservation.error,
         reduce: (state: IReservationState, payload: any) => {
             state.errorMessage = payload.response.body.Message;
+        }
+    },
+    {
+        action: getUserReservationHistory.request,
+        reduce: (state: IReservationState, payload: any) => {
+            payload.options = {};
+            payload.options["Content-Type"] = "application/x-www-form-urlencoded; charset=utf-8";
+            payload.options["Authorization"] = "Bearer " + state.token;
+        }
+    },
+    {
+        action: getUserReservationHistory.response,
+        reduce: (state: IReservationState, payload: { Data: Array<IHistoryResponse> }) => {
+            state.reservations = [];
+            payload.Data.forEach(element => {
+                if(element.Status === "Complete")
+                state.reservations.push({
+                    city: element.City,
+                    cinema: element.Cinema,
+                    date: element.Date + " " + element.Time,
+                    movie: element.Movie,
+                    numberOfSeats: element.Quantity,
+                    pricePerSeat: getRandomInt(1, 30)
+                })
+            });
         }
     }
 ], initialState);
