@@ -5,10 +5,6 @@
         <span>{Genre}</span>        
         <span>{Runtime}</span>
         <div>{Plot}</div> 
-        <!--<span class="show-more-button" onclick={toggleShowMore}>Show more.. </span>
-        <div show={show}>
-            {Plot} 
-        </div>-->
-        <cinema-result-advanced class="{hidden: hide}" each="{Cinemas}"></cinema-result-advanced>
+        <cinema-result-advanced each="{Cinemas}" onclick="{searchProjectionsAdvanced(ImdbID)}"></cinema-result-advanced>
     </div>  
 </search-result> 

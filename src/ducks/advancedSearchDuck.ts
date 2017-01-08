@@ -1,6 +1,6 @@
 import Flux from 'corky/flux';
 import {app} from '../main';
-import {ICinemaSearchMovieResult} from './cinemaSearchDuck';
+import {ICinemaSearchMovieResult, IProjection} from './cinemaSearchDuck';
 
 export interface IAdvancedSearchMovieResult{
     Title: string,
@@ -9,10 +9,23 @@ export interface IAdvancedSearchMovieResult{
     Runtime: string,
     Plot: string,
     Genre: string,
-    Cinemas: Array<ICinemaSearchMovieResult>,
+    Cinemas: Array<ICinemaSearchProjectionsResult>,
     cin: boolean
 }
 
+export interface ICinemaSearchProjectionsResult{
+    Name: string,
+    CinemaID: string,
+    Address: string,
+    Latitude: string,
+    Longitude: string,
+    PhoneNumber: string,
+    Region: string,
+    Province: string,
+    City: string,
+    Projections: Array<IProjection>,
+    mov: boolean
+}
 export interface IAdvancedArrayResponse {
     Data: Array<{
         Title: string,
@@ -57,7 +70,7 @@ export const getCityNameAdvanced = new Flux.RequestAction<{query: {format: strin
 export const getCinemasFromMovie = new Flux.RequestAction<{template: {imdbId: string, latitude: string, longitude: string}, query: {StartDate: string, EndDate:string}}, any>("GET_CINEMAS_FROM_MOVIE", "https://moviebot-rage.azurewebsites.net/api/v2/movies/id/{imdbId}/cinemas/{latitude}/{longitude}/", "GET");
 
 export const setDate = new Flux.Action<{ dateFrom: string, dateTo: string }>("SET_DATE");
-
+export const getProjectionsFromCinema = new Flux.RequestAction<{template:{cinemaId: string, imdbId: string},query:{ StartDate:string, EndDate:string}}, any>("GET_PROJECTIONS_CINEMA", "http://moviebot-rage.azurewebsites.net/api/v2/projections/list/{imdbId}/{cinemaId}", "GET");
 
 
 export var advancedSearchReducer = new Flux.Reducer<IAdvancedSearchState>([
@@ -141,6 +154,30 @@ export var advancedSearchReducer = new Flux.Reducer<IAdvancedSearchState>([
             if(state.myCity === undefined) {
                 state.myCity = payload.address.town;
             }
+        }
+    },
+    {
+        action: getProjectionsFromCinema.request,
+        reduce: (state : IAdvancedSearchState, payload: any) => {
+            payload.options = {};
+            payload.options["Content-Type"] = "application/x-www-form-urlencoded;  charset=utf-8";
+        }
+    },
+    {
+        action: getProjectionsFromCinema.response,
+        reduce: (state : IAdvancedSearchState, payload: any) => {
+            state.result.forEach(element => {
+                if(element.ImdbID == payload.Data[0].ImdbID){
+                    element.Cinemas.forEach(cinema => {
+                        if(cinema.CinemaID == payload.Data[0].CinemaID){
+                            cinema.Projections = payload.Data;
+                            for(var i = 0; i < payload.Data.length; i++){
+                                cinema.Projections[i].date = payload.Data[i].Date;
+                            }
+                        }
+                    })
+                }
+            })
         }
     },
     {

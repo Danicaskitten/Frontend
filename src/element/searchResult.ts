@@ -37,6 +37,7 @@ export abstract class SearchResult extends Element {
     }
 
     changeVisibilityMovie(event){
+        event.stopPropagation();
         this.hide = !this.hide;
         if(!this.hide){
             this.cin = true;
