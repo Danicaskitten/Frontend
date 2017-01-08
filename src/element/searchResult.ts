@@ -4,7 +4,7 @@ import {app} from '../main';
 import {ICinemaSearchMovieResult} from '../ducks/cinemaSearchDuck';
 import {getCinemasFromMovie} from '../ducks/advancedSearchDuck';
 
-
+@template("imdb-search-result", null)
 @template("search-result", null)
 export abstract class SearchResult extends Element {
     Title: string;

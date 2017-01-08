@@ -119,7 +119,7 @@ app.setRouter([
                         clearInterval(timingInterval);
                     timingInterval = undefined;
                     app.dispatch(goToView.payload({ view: PageActive.Search }));
-                    app.dispatch(searchMovieByTitle.payload({ query: { title: decodeURI(q) } }));
+                    //app.dispatch(searchMovieByTitle.payload({ query: { title: decodeURI(q) } }));
                 }
             })
         ],
