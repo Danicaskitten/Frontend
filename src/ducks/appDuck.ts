@@ -68,7 +68,12 @@ export interface Profile {
 
 export interface IAppState {
     active: PageActive,
-    user: Profile
+    user: Profile,
+    loginError: string,
+    emailError: string,
+    passwordError: string,
+    confirmPasswordError: string,
+    arrayError: Array<string>
 }
 
 export interface IChoosenGenres {
@@ -90,7 +95,12 @@ var initialState: IAppState = {
             { genre: 4, choosen: false },
             { genre: 5, choosen: false },
             { genre: 6, choosen: false }]
-    }
+    },
+    loginError: "",
+    emailError: "",
+    passwordError: "",
+    confirmPasswordError: "",
+    arrayError: []
 }
 
 
@@ -189,12 +199,41 @@ export var appReducer = new Flux.Reducer<IAppState>([
         reduce: (state: IAppState, payload: any) => {
             console.log("Success", payload);
             state.active = PageActive.Login;
+            state.emailError = "";
+            state.passwordError = "";
+            state.confirmPasswordError = "";
+            state.arrayError.length = 0;
         }
     },
     {
         action: registerUser.error,
         reduce: (state: IAppState, payload: any) => {
             console.log("Error occured", payload);
+            var modelState = payload.response.body.ModelState;
+            if (modelState['model.Email'] !== undefined){
+                state.emailError = modelState['model.Email'][0];
+            }
+            else {
+                state.emailError = "";
+            }
+            if (modelState['model.Password'] !== undefined){
+                state.passwordError = modelState['model.Password'][0];
+            }
+            else {
+                state.passwordError = "";
+            }
+            if (modelState['model.ConfirmPassword'] !== undefined){
+                state.confirmPasswordError = modelState['model.ConfirmPassword'][0];
+            }
+            else {
+                state.confirmPasswordError = "";
+            }
+            if (modelState[''] !== undefined){
+                state.arrayError = modelState[''][0].split(". ");
+            }
+            else {
+                state.arrayError.length = 0;
+            }
         }
     },
     {
@@ -214,6 +253,7 @@ export var appReducer = new Flux.Reducer<IAppState>([
             localStorage.setItem('user', payload.userName);
             localStorage.setItem('token', payload.access_token);
             localStorage.setItem('expires', payload[".expires"]);
+            state.loginError = "";
             console.log("payload login", payload);
         }
     },
@@ -221,6 +261,7 @@ export var appReducer = new Flux.Reducer<IAppState>([
         action: loginUser.error,
         reduce: (state: IAppState, payload: any) => {
             console.log("Error occured", payload);
+            state.loginError = payload.response.body.error_description;
         }
     }
 ], initialState);

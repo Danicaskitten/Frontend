@@ -12,9 +12,6 @@ export abstract class Registration extends Element {
              var email = (<HTMLInputElement>document.getElementById("registration-name")).value;
              var password = (<HTMLInputElement>document.getElementById("registration-password")).value;
              var confpassword = (<HTMLInputElement>document.getElementById("registration-repeat-password")).value;
-             if(password.trim() === confpassword.trim())
-             {
-                 this.register(email,password,confpassword);
-             }
+             this.register(email,password,confpassword);
         }
 }

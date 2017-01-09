@@ -3,10 +3,26 @@
     <h4> MovieBot </h4>
     <label for="registration-name">Email: </label>
     <input id="registration-name" type="text"/>
+    <div class="error-message" style="margin-top:0px" show={(emailError.length) > 0}>
+        <i class="fa fa-exclamation" aria-hidden="true" style="font-size: 20px;margin-right: 5px;"></i>
+        {emailError}
+    </div>
     <label for="registration-password">Password: </label>
     <input id="registration-password" type="password"/>
+    <div class="error-message" style="margin-top:0px" show={(passwordError.length) > 0}>
+        <i class="fa fa-exclamation" aria-hidden="true" style="font-size: 20px;margin-right: 5px;"></i>
+        {passwordError}
+    </div>
     <label for="registration-repeat-password">Repeat password: </label>
     <input id="registration-repeat-password" type="password"/>
+    <div class="error-message" style="margin-top:0px" show={(confirmPasswordError.length) > 0}>
+        <i class="fa fa-exclamation" aria-hidden="true" style="font-size: 20px;margin-right: 5px;"></i>
+        {confirmPasswordError}
+    </div>
+    <div each={item in arrayError} class="error-message" style="margin-top:0px" show={(arrayError.length) > 0}>
+        <i class="fa fa-exclamation" aria-hidden="true" style="font-size: 20px;margin-right: 5px;"></i>
+        {item}
+    </div>
     <button onclick={registerUser}>Register</button>
      
 </registration>
