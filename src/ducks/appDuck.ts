@@ -72,7 +72,7 @@ export interface IAppState {
     loginError: string,
     emailError: string,
     passwordError: string,
-    confirmPasswordError: string
+    confirmPasswordError: Array<string>
 }
 
 export interface IChoosenGenres {
@@ -98,7 +98,7 @@ var initialState: IAppState = {
     loginError: "",
     emailError: "",
     passwordError: "",
-    confirmPasswordError: ""
+    confirmPasswordError: []
 }
 
 
@@ -199,7 +199,7 @@ export var appReducer = new Flux.Reducer<IAppState>([
             state.active = PageActive.Login;
             state.emailError = "";
             state.passwordError = "";
-            state.confirmPasswordError = ""
+            state.confirmPasswordError.length = 0;
         }
     },
     {
@@ -223,7 +223,13 @@ export var appReducer = new Flux.Reducer<IAppState>([
                 state.confirmPasswordError = modelState['model.ConfirmPassword'][0];
             }
             else {
-                state.confirmPasswordError = "";
+                state.confirmPasswordError.length = 0;
+            }
+            if (modelState[''] !== undefined){
+                state.confirmPasswordError = modelState[''][0].split(". ");
+            }
+            else {
+                state.confirmPasswordError.length = 0;
             }
         }
     },
