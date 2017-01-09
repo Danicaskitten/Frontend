@@ -1,10 +1,12 @@
 import Flux from 'corky/flux';
 import {app} from '../main';
+import { loginUser, logoutUser, readStorage } from './appDuck';
 
 export interface IDashboardState {
     dashboard: {
         result: Array<ISuggestion>
-    }
+    },
+    token: string
 }
 
 export interface IImdbResult {
@@ -16,7 +18,8 @@ export interface IImdbResult {
 var initialState: IDashboardState = {
     dashboard: {
         result: []
-    }
+    },
+    token:""
 }
 
 var emptyImdbRresult: IImdbResult = {
@@ -90,16 +93,36 @@ export interface ImdbRe {
 }
 
 export const getImageFromImdb = new Flux.RequestAction<any, ImdbRe>("IMAGE_FROM_IMDB","http://imdb.wemakesites.net/api/tt0848228", "GET");
-export const getMovies = new Flux.RequestAction<any, Array<IDashboardResponse>>("DASHBOARD_LIFE", "https://moviebot-rage.azurewebsites.net/api/v1/Recommender/movies", "GET");
+export const getMovies = new Flux.RequestAction<any, Array<IDashboardResponse>>("DASHBOARD_LIFE", "https://moviebot-rage.azurewebsites.net/api/v2/Recommender/moviesByGenre", "GET");
 export const getProjections = new Flux.RequestAction<{ query: {imdbid: string},options: any}, Array<ITimeAndLocation>>("TIME_AND_LOCATION","https://moviebot-rage.azurewebsites.net/api/v1/Search/CinemaFromMovie", "GET");
 
 export var dashboardReducer = new Flux.Reducer<IDashboardState>(
     [
+         {
+        action: logoutUser,
+        reduce: (state: IDashboardState, payload: any) => {
+            state = initialState;
+        }
+    },
+    {
+        action: readStorage,
+        reduce: (state: IDashboardState, payload: any) => {
+            state.token = localStorage.getItem("token");
+        }
+    },
+    {
+        action: loginUser.response,
+        reduce: (state: IDashboardState, payload: { userName: string, access_token: string }) => {
+            state.token = payload.access_token;
+        }
+    },
         {
            action: getMovies.request,
            reduce: (state: IDashboardState, payload: any) => {
                payload.options = {};
                payload.options["Content-Type"] = "application/x-www-form-urlencoded; charset=utf-8";
+               payload.options["Authorization"] = "Bearer " + state.token;
+            
            }
        },
         {

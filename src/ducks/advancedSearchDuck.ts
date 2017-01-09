@@ -223,17 +223,17 @@ function getLocation(){
     setTimeout(function(){
         app.dispatch(advancedMovieSearchLocation.payload({template:{longitude: longitude, latitude: latitude}, query: {StartDate: startDate, EndDate: endDate}}));
 
-    }, 3000);
+    }, 500);
 }
 
 function getCityNameByLocation(){
     setTimeout(function(){
         app.dispatch(getCityNameAdvanced.payload({query: {format: "json", lat: latitude, lon: longitude}}));
-    }, 3000);
+    }, 500);
 }
 
 function getCityMovieProjection(){
     setTimeout(function(){
         app.dispatch(getCityNameAdvanced.payload({query: {format: "json", lat: latitude, lon: longitude}}));
-    }, 3000);
+    }, 500);
 }

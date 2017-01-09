@@ -10,7 +10,7 @@ export abstract class Profile extends Element {
 
         saveChanges(){ 
                 var arrayOfTrue = [];
-                for(var i = 0 ; i < 7; i++){
+                for(var i = 1 ; i < 7; i++){
                         if((<HTMLInputElement> document.getElementById("checkbox-" + i)).checked === true){
                                 arrayOfTrue.push(i);
                         }
