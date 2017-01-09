@@ -5,8 +5,22 @@
         Available genres:
         <br/>
         <span class="radio" each={genres} >
-        <input id="checkbox-{value}" type="checkbox" checked={choosen} value="{value}"><label for="checkbox-{value}"><span></span>{text}</label> <br>
+        <input id="checkbox-{value}" type="checkbox" class="input-c" checked={choosen} value="{value}"> <label for="checkbox-{value}"><span></span>{text}</label><br>
         </span>
         <button onclick="{saveChanges}">Save genres</button> 
     </div>
+    <style scoped>
+        *{
+            font-size: 18px;
+        }
+        label{
+            font-size: 20px;
+       
+        }
+        .input-c{
+            padding: 20px;
+            width: 20px;
+            height: 20px;
+        }
+    </style>
 </profile>   

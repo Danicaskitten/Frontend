@@ -16,7 +16,12 @@
         <div id="basic-search-div" class="result-container"> 
                 <imdb-search-result each={result} /> 
         </div>
-        <i if={loadingBasicData} class="fa fa-refresh fa-spin fa-3x fa-fw"></i>
-        <span if={loadingBasicData} class="sr-only">Loading...</span>      
+        <i show={loadingBasicData} class="fa fa-refresh fa-spin fa-3x fa-fw"></i>
     <div>
+    <style scoped>
+		.widthall{ 
+            width:100%  !important;
+            padding: 0 !important;
+        }
+	</style>
 </search-view>    
