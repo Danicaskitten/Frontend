@@ -5,6 +5,10 @@
     <input id="login-name" type="text"/>
     <label for="login-password">Password: </label> 
     <input id="login-password" type="password"/>
+    <div class="error-message" style="margin-top:0px" show={(loginError.length) > 0}>
+        <i class="fa fa-exclamation" aria-hidden="true" style="font-size: 20px;margin-right: 5px;"></i>
+        {loginError}
+    </div>
     <button onclick={loginUser}>Login</button>
     <div onclick="{redirectToRegister}"> New to MovieBot? Register!</div>
 </login>   

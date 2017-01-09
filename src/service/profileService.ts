@@ -14,7 +14,11 @@ export class ProfileService extends Service {
                    value: <number>item.genre,
                    choosen: item.choosen
                }
-           })
+           }),
+           loginError: state.app.loginError,
+           emailError: state.app.emailError,
+           passwordError: state.app.passwordError,
+           confirmPasswordError: state.app.confirmPasswordError
         }
     );
     actions = {
