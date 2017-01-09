@@ -18,7 +18,8 @@ export class ProfileService extends Service {
            loginError: state.app.loginError,
            emailError: state.app.emailError,
            passwordError: state.app.passwordError,
-           confirmPasswordError: state.app.confirmPasswordError
+           confirmPasswordError: state.app.confirmPasswordError,
+           arrayError: state.app.arrayError
         }
     );
     actions = {

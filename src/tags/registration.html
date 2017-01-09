@@ -15,7 +15,11 @@
     </div>
     <label for="registration-repeat-password">Repeat password: </label>
     <input id="registration-repeat-password" type="password"/>
-    <div each={item in confirmPasswordError} class="error-message" style="margin-top:0px" show={(confirmPasswordError.length) > 0}>
+    <div class="error-message" style="margin-top:0px" show={(confirmPasswordError.length) > 0}>
+        <i class="fa fa-exclamation" aria-hidden="true" style="font-size: 20px;margin-right: 5px;"></i>
+        {confirmPasswordError}
+    </div>
+    <div each={item in arrayError} class="error-message" style="margin-top:0px" show={(arrayError.length) > 0}>
         <i class="fa fa-exclamation" aria-hidden="true" style="font-size: 20px;margin-right: 5px;"></i>
         {item}
     </div>
