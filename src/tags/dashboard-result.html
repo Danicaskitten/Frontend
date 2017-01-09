@@ -1,10 +1,73 @@
-<dashboard-result>
-    <div class="container">
-	    <img src="{url}">
-        <div class="description"> 
-            <div class="movieTitle">{title}</div>
-            <div>{description}</div>             
-        </div> 
-         <time-and-location class="{hidden: hide} time" each="{timeAndLocation}"></time-and-location> 
+<dashboard-result class={widthall: hide} style="position: relative;">
+    <div class="poster-data {opened : hide}">
+        <img class="{opened : hide}" src={url} />
+         
     </div>
+    <div show={hide} class="poster-overlay " ></div>
+    <div show={hide} class="data-container " >
+            <i class="fa fa-star fa" aria-hidden="true"> &nbsp;{imdbRating}</i>
+            <h5> {title}</h5>  
+            <span class="genre">{genre}</span>        
+            <span class="runtime">{runtime}</span>
+            <div class="actors">{actors}</div>
+            <div show={hide} class="plot">
+            <span>{description}</span>
+            </div> 
+    </div>  
+    
+    <style scoped>
+        .actors{
+            position: absolute;
+            top: 68px;
+            width: 80%;
+            left: 10px;
+        }
+        .plot{
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+        }
+        .runtime{
+            position: absolute;
+            left: 10px;
+            color: #E97400;
+            font-size: 16px;
+            font-weight: 700;
+        }
+        .genre{
+            position: absolute;
+            right: 10px;
+            color: #E97400;
+            font-size: 16px;
+            font-weight: 700;
+        }
+        .widthall{ 
+            width:100%;
+            padding: 0 !important;
+        }
+        .showDiv{
+            display: none;
+        }
+        .poster-data{
+            width: 121px; 
+            height: 170px;
+            overflow: hidden;
+            display: inline-block;
+        }  
+        .poster-data.opened{
+            width: 100%;
+            height: 250px;
+        }
+        img.opened{
+            width: 100%;
+            height: auto !important;
+        }
+        .data-container{
+            position: absolute;
+            bottom: 0px;
+            width: 100%;
+            color: white; 
+            background: rgba(0,0,0,0.7);
+        }
+    </style>
 </dashboard-result>

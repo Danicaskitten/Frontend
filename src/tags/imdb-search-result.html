@@ -1,12 +1,74 @@
-<imdb-search-result>
-    <img src={Poster} />
-    <div class="data-container" onclick={toggleShowMore}>
-        <i class="fa fa-star fa" aria-hidden="true">{imdbRating}</i>
-        <h5> {Title}</h5>
-        <span>{Genre}</span>        
-        <span>{Runtime}</span>
-        <div show={show}>
-        <span>{Plot}</span>
-        </div>
+<imdb-search-result class={widthall: show} onclick={toggleShowMore}>
+    <div class="poster-data {opened : show}">
+        <img class="{opened : show}" src={Poster} />
+        
+    </div>
+    <div  class="poster-overlay {showDiv: !show}" ></div>
+    <div class="data-container {showDiv: !show}" >
+            <i class="fa fa-star fa" aria-hidden="true"> &nbsp;{imdbRating}</i>
+            <h5> {Title}</h5>
+            <span class="genre">{Genre}</span>        
+            <span class="runtime">{Runtime}</span>
+            <div class="actors">{Actors}</div>
+            <div show={show} class="plot">
+            <span>{Plot}</span>
+            </div> 
     </div>  
+    
+    <style scoped>
+        .actors{
+            position: absolute;
+            top: 68px;
+            width: 80%;
+            left: 10px;
+        }
+        .plot{
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+        }
+        .runtime{
+            position: absolute;
+            left: 10px;
+            color: #E97400;
+            font-size: 16px;
+            font-weight: 700;
+        }
+        .genre{
+            position: absolute;
+            right: 10px;
+            color: #E97400;
+            font-size: 16px;
+            font-weight: 700;
+        }
+        .widthall{ 
+            width:100%;
+            padding: 0 !important;
+        }
+        .showDiv{
+            display: none;
+        }
+        .poster-data{
+            width: 121px; 
+            height: 170px;
+            overflow: hidden;
+            display: inline-block;
+        }  
+        .poster-data.opened{
+            width: 100%;
+            height: 250px;
+        }
+        img.opened{
+            width: 100%;
+            height: auto !important;
+        }
+        .data-container{
+            position: absolute;
+            bottom: 0px;
+            width: 100%;
+            height: 70%;
+            color: white; 
+            background: rgba(0,0,0,0.7);
+        }
+    </style>
 </imdb-search-result> 

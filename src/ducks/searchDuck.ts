@@ -5,11 +5,13 @@ import { app } from '../main';
 export interface ISearchState {
     query: string;
     movieDataResult: Array<ISearchMovieData>;
+    loadingBasicSearchData: boolean
 }
 
 var initialState: ISearchState = {
     query: "",
     movieDataResult: [],
+    loadingBasicSearchData: false
 }
 
 export interface ISearchMovieData {
@@ -43,44 +45,44 @@ export interface ISearchMovieResult {
     Poster: string
 }
 
-var movieResult = Array<ISearchMovieResult>();
-
-export const searchMovieByTitle = new Flux.RequestAction<{ template: { title: string } }, any>("SEARCH_MOVIE_TITLE", "http://www.omdbapi.com/?s={title}", "GET");
-export const searchMovieByData = new Flux.RequestAction<{ template: { title: string } }, any>("SEARCH_MOVIE_DATA", "http://www.omdbapi.com/?t={title}", "GET");
+var movieResult : Array<ISearchMovieData> =[];
+export const searchMovieByTitle = new Flux.RequestAction<{ template: { title: string } }, any>("SEARCH_MOVIE_TITLE", "http://www.omdbapi.com/?s={title}&type=movie", "GET");
+export const searchMovieByData = new Flux.RequestAction<{ template: { title: string } }, any>("SEARCH_MOVIE_DATA", "http://www.omdbapi.com/?t={title}&tomatoes=true", "GET");
 
 export var searchReducer = new Flux.Reducer<ISearchState>([
     {
         action: searchMovieByTitle.request,
         reduce: (state: ISearchState, payload: any) => {
             payload.options = {};
-            payload.options["Content-Type"] = "application/x-www-form-urlencoded; charset=utf-8";
+            movieResult = [];
+            state.loadingBasicSearchData = true;
+            payload.options["Content-Type"] = "application/x-www-form-urlencoded";
         }
     },
     {
         action: searchMovieByTitle.response,
         reduce: (state: ISearchState, payload: any) => {
-            movieResult = payload.Search;
             state.movieDataResult = [];
+            movieResult = payload.Search;
+            getMovieByData();
         }
     },
-    {
-        action: searchMovieByData.request,
-        reduce: (state: ISearchState, payload: any) => {
-            payload.options = {};
-            payload.options["Content-Type"] = "application/x-www-form-urlencoded; charset=utf-8";
-        }
-    },
+    
     {
         action: searchMovieByData.response,
         reduce: (state: ISearchState, payload: any) => {
+            state.loadingBasicSearchData = false;
             state.movieDataResult.push(payload);
         }
     }
 ], initialState);
 
-export function getMovieByData() {
+function getMovieByData() {
     for (var i = 0; i < movieResult.length; i++) {
+        var payload = { template: { title: movieResult[i].Title }, options: {} };
+        payload.options["Content-Type"] = "application/x-www-form-urlencoded";
         console.log(movieResult[i].Title);
-        app.dispatch(searchMovieByData.payload({ template: { title: movieResult[i].Title } }));
+        app.dispatch(searchMovieByData.payload(payload));
+        
     }
 }

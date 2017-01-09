@@ -74,7 +74,8 @@ export interface IDashboardArrayResponse {
         Poster: string,
         Runtime: string,
         Plot: string,
-        Genre: string
+        Genre: string,
+        Actors: any
     }>
 }
 
@@ -136,7 +137,8 @@ export var dashboardReducer = new Flux.Reducer<IDashboardState>(
                         description: obj.Plot,
                         runtime: obj.Runtime,
                         genre: obj.Genre,
-                        timeAndLocation: []
+                        timeAndLocation: [],
+                        actors: obj.Actors
                     }
                 });
                 return state;

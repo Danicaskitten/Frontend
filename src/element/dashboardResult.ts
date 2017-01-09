@@ -18,23 +18,22 @@ export abstract class Result extends Element{
         super();
         this.id = opts.id;
         this.url = opts.url;
-        this.hide = true;
+        this.hide = false;
         this.title = opts.title;
         this.description = opts.description;
         this.genre = opts.genre;
         this.runtime = opts.runtime;
-        this.timeAndLocation = opts.timeAndLocation;
     }
 
     changeVisibility(event){
         this.hide = !this.hide;
-        if(!this.hide){
-            var options = {};
-            options["Content-Type"] = "application/x-www-form-urlencoded; charset=utf-8";
-            app.dispatch(getProjections.payload({ query: { imdbid: this.id },options: options}));
-        }
-        else{
-            this.timeAndLocation.length = 0;
-        }
+        // if(!this.hide){
+        //     var options = {};
+        //     options["Content-Type"] = "application/x-www-form-urlencoded; charset=utf-8";
+        //     app.dispatch(getProjections.payload({ query: { imdbid: this.id },options: options}));
+        // }
+        // else{
+        //     this.timeAndLocation.length = 0;
+        // }
     }  
 }

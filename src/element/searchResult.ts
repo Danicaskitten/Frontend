@@ -32,14 +32,16 @@ export abstract class SearchResult extends Element {
         this.cin = false;
     }
 
-    toggleShowMore(){
+    toggleShowMore(event){
         this.show = !this.show;
+        var elementScroll = (document.getElementById("basic-search-div"));
+      //  elementScroll.scrollTop = event.target.offsetTop;
     }
 
     changeVisibilityMovie(event){
         event.stopPropagation();
         this.hide = !this.hide;
-        if(!this.hide){
+         if(!this.hide){
             this.cin = true;
             app.dispatch(getCinemasFromMovie.payload({ template: {imdbId: this.ImdbID, latitude: "", longitude: ""},query:{EndDate:"", StartDate:""}}));
         }

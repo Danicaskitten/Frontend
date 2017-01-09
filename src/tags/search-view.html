@@ -1,20 +1,22 @@
 <search-view>
     <div style="display:table;width:100%">
-        <button class="nav-button {active-nav: active===2}" onclick="{redirectToSearch}" >Basic</button>
-        <button class="nav-button {active-nav: active===7}" onclick="{redirectToAdvancedSearch}" >Advanced</button>
-        <button class="nav-button {active-nav: active===8}" onclick="{redirectToCinemaSearch}" >Cinema Search</button>
+        <button class="nav-button {active-nav: active===2}" onclick="{redirectToSearch}" >Search IMDB database</button>
+        <button class="nav-button {active-nav: active===7}" onclick="{redirectToAdvancedSearch}" >Search movies currently running</button>
+        <button class="nav-button {active-nav: active===8}" onclick="{redirectToCinemaSearch}" >Search cinema programs</button>
     </div>  
     <advanced-search-view  show="{active === 7}" />
     <cinema-search-view show="{ active === 8}" />
-    <div class="search-view" show="{active === 2}">
+    <div  class="search-view" show="{active === 2}">
         <input id="search-input" class="search-input" />
         <span class="span-input-button">
             <button onclick={search} class="search-input-button">
                 <i class="fa fa-search" aria-hidden="true"></i>            
             </button>     
         </span>  
-        <div class="result-container"> 
+        <div id="basic-search-div" class="result-container"> 
                 <imdb-search-result each={result} /> 
-        </div>      
+        </div>
+        <i if={loadingBasicData} class="fa fa-refresh fa-spin fa-3x fa-fw"></i>
+        <span if={loadingBasicData} class="sr-only">Loading...</span>      
     <div>
 </search-view>    
