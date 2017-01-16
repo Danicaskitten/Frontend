@@ -3,7 +3,7 @@ import template from '../template';
 import advancedSearchService from '../service/advancedSearchService';
 import {IAdvancedSearchMovieResult} from '../ducks/advancedSearchDuck';
 import {app} from '../main';
-import {advancedMovieSearchLocation, getLocationFromOSMAdvanced, getLocationFromGoogleApi, setDate} from '../ducks/advancedSearchDuck';
+import {advancedMovieSearchLocation, getLocationFromOSMAdvanced, getLocationFromGoogleApi, setDate, setTitle, getMoviesJustFromTitle} from '../ducks/advancedSearchDuck';
 import {mapKey} from '../config';
 
 @template("advanced-search-view",advancedSearchService)
@@ -12,16 +12,24 @@ export abstract class AdvancedSearchView extends Element {
     myCity: string
     startDate: string
     endDate: string
+    title: string
 
     advancedSearch() {
         dateFromForm = (<HTMLInputElement>document.getElementById("datepicker")).value;
         dateFromForm = dateFromForm.trim();
-        var date = new Date(dateFromForm);
-        date.setDate(date.getDate() + 1);
-        dateTo = getStringFromDate(date);
+        if (dateFromForm !== "" && dateFromForm !== undefined){
+            var date = new Date(dateFromForm);
+            date.setDate(date.getDate() + 1);
+            dateTo = getStringFromDate(date);
+        }
+        else {
+            dateTo = "";
+        }
+        var title = (<HTMLInputElement>document.getElementById("title-input")).value;
+        title = title.trim();
         app.dispatch(setDate.payload({dateFrom: dateFromForm, dateTo: dateTo}));
+        app.dispatch(setTitle.payload({title: title}));
         var city = "";
-
         var isChecked = (<HTMLInputElement>document.getElementById('search-option')).checked;
         if (isChecked){
             var needsParsing = (<HTMLElement>document.getElementById('label-location-advanced')).textContent;
@@ -33,6 +41,11 @@ export abstract class AdvancedSearchView extends Element {
         }
         if(city !== "" && city !== undefined && city !== null){
             getLocation(city);
+        }
+        else {
+            if(title !== "" && title !== undefined && title !== null){
+                app.dispatch(getMoviesJustFromTitle.payload({template: {title: title}}));
+            }
         }
     }
 }

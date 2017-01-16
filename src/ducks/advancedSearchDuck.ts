@@ -45,7 +45,8 @@ export interface IAdvancedSearchState{
     latitude: string,
     longitude: string,
     startDate: string,
-    endDate: string
+    endDate: string,
+    title: string
 }
 
 var initialState : IAdvancedSearchState = {
@@ -55,13 +56,15 @@ var initialState : IAdvancedSearchState = {
     latitude: "",
     longitude: "",
     startDate: "",
-    endDate: ""
+    endDate: "",
+    title: ""
 };
 
 var latitude = "";
 var longitude = "";
 var startDate = "";
 var endDate = "";
+var title = "";
 
 export const advancedMovieSearchLocation = new Flux.RequestAction<{template:{longitude: string, latitude: string}, query: { StartDate: string, EndDate: string;}}, any>("ADVANCE_SEARCH_MOVIE", "http://moviebot-rage.azurewebsites.net/api/v2/movies/near/{latitude}/{longitude}/", "GET");
 export const getLocationFromOSMAdvanced = new Flux.RequestAction<{template: {city: string}}, any>("GET_LOCATION_ADVANCED", "http://nominatim.openstreetmap.org/search/{city}?format=json", "GET");
@@ -69,12 +72,39 @@ export const getLocationFromGoogleApi = new Flux.RequestAction<{query: {key: str
 export const getLocationForInfoAdvanced = new Flux.RequestAction<{query: {key: string}}, any>("GET_LOCATION_FOR_INFO_ADVANCED", "https://www.googleapis.com/geolocation/v1/geolocate", "POST");
 export const getCityNameAdvanced = new Flux.RequestAction<{query: {format: string, lat: string, lon: string}}, any>("GET_CITY_NAME_ADVANCED", "http://nominatim.openstreetmap.org/reverse", "GET");
 export const getCinemasFromMovie = new Flux.RequestAction<{template: {imdbId: string, latitude: string, longitude: string}, query: {StartDate: string, EndDate:string}}, any>("GET_CINEMAS_FROM_MOVIE", "https://moviebot-rage.azurewebsites.net/api/v2/movies/id/{imdbId}/cinemas/{latitude}/{longitude}/", "GET");
-
+export const getMoviesFromTitle = new Flux.RequestAction<{template: {title: string, latitude: string, longitude: string}, query: {StartDate: string, EndDate: string}}, any>("GET_MOVIES_BY_TITLE", "http://moviebot-rage.azurewebsites.net/api/v2/movies/title/{title}/{latitude}/{longitude}/", "GET")
 export const setDate = new Flux.Action<{ dateFrom: string, dateTo: string }>("SET_DATE");
 export const getProjectionsFromCinema = new Flux.RequestAction<{template:{cinemaId: string, imdbId: string},query:{ StartDate:string, EndDate:string}}, any>("GET_PROJECTIONS_CINEMA", "http://moviebot-rage.azurewebsites.net/api/v2/projections/list/{imdbId}/{cinemaId}", "GET");
-
+export const setTitle = new Flux.Action<{title: string}>("SET_TITLE");
+export const getMoviesJustFromTitle = new Flux.RequestAction<{template: {title: string}}, any>("GET_JUST_TITLE", "http://moviebot-rage.azurewebsites.net/api/v2/movies/title/{title}/", "GET");
 
 export var advancedSearchReducer = new Flux.Reducer<IAdvancedSearchState>([
+    {
+           action: getMoviesFromTitle.request,
+           reduce: (state: IAdvancedSearchState, payload: any) => {
+               payload.options = {};
+               payload.options["Content-Type"] = "application/x-www-form-urlencoded; charset=utf-8";
+           }
+       },
+    {
+        action: getMoviesFromTitle.response,
+        reduce: (state: IAdvancedSearchState, payload: any) => {
+            state.result = payload.Data;
+        }
+    },
+    {
+           action: getMoviesJustFromTitle.request,
+           reduce: (state: IAdvancedSearchState, payload: any) => {
+               payload.options = {};
+               payload.options["Content-Type"] = "application/x-www-form-urlencoded; charset=utf-8";
+           }
+       },
+    {
+        action: getMoviesJustFromTitle.response,
+        reduce: (state: IAdvancedSearchState, payload: any) => {
+            state.result = payload.Data;
+        }
+    },
     {
            action: advancedMovieSearchLocation.request,
            reduce: (state: IAdvancedSearchState, payload: any) => {
@@ -97,7 +127,13 @@ export var advancedSearchReducer = new Flux.Reducer<IAdvancedSearchState>([
             state.longitude = payload[0].lon;
             startDate = state.startDate;
             endDate = state.endDate;
-            getLocation();
+            title = state.title;
+            if (title !== "" && title !== undefined && title !== null){
+                movieFromTitle();
+            }
+            else{
+                getLocation();
+            }
         }
     },
     {
@@ -105,6 +141,12 @@ export var advancedSearchReducer = new Flux.Reducer<IAdvancedSearchState>([
         reduce: (state: IAdvancedSearchState, payload: { dateFrom: string, dateTo: string }) => {
             state.endDate = payload.dateTo;
             state.startDate = payload.dateFrom;
+        }
+    },
+    {
+        action: setTitle,
+        reduce: (state: IAdvancedSearchState, payload: { title: string }) => {
+            state.title = payload.title;
         }
     },
     {
@@ -222,7 +264,12 @@ export var advancedSearchReducer = new Flux.Reducer<IAdvancedSearchState>([
 function getLocation(){
     setTimeout(function(){
         app.dispatch(advancedMovieSearchLocation.payload({template:{longitude: longitude, latitude: latitude}, query: {StartDate: startDate, EndDate: endDate}}));
+    }, 500);
+}
 
+function movieFromTitle(){
+    setTimeout(function(){
+        app.dispatch(getMoviesFromTitle.payload({template:{title: title, longitude: longitude, latitude: latitude}, query: {StartDate: startDate, EndDate: endDate}}));
     }, 500);
 }
 

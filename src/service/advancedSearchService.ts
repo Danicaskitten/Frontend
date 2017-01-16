@@ -7,7 +7,8 @@ export class AdvancedSearchService extends Service {
         result: state.advancedSearch.result,
         myCity: state.advancedSearch.myCity,
         startDate: state.advancedSearch.startDate,
-        endDate: state.advancedSearch.endDate
+        endDate: state.advancedSearch.endDate,
+        title: state.advancedSearch.title
     });
 }
 
