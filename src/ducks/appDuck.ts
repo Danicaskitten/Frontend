@@ -73,7 +73,8 @@ export interface IAppState {
     emailError: string,
     passwordError: string,
     confirmPasswordError: string,
-    arrayError: Array<string>
+    arrayError: Array<string>,
+    changePasswordError: string
 }
 
 export interface IChoosenGenres {
@@ -100,7 +101,8 @@ var initialState: IAppState = {
     emailError: "",
     passwordError: "",
     confirmPasswordError: "",
-    arrayError: []
+    arrayError: [],
+    changePasswordError: ""
 }
 
 
@@ -126,8 +128,39 @@ export const loadUserGenres = new Flux.RequestAction<any, any>("GET_USER_GENRES"
 export const addUserGenre = new Flux.RequestAction<{template:{genreId: string},options:any}, any>("ADD_USER_GENRE", "http://moviebot-rage.azurewebsites.net/api/v2/FavoriteGenres/add/{genreId}", "PUT");
 export const removeUserGenre = new Flux.RequestAction<{template:{genreId: string},options:any}, any>("REMOVE_USER_GENRE", "http://moviebot-rage.azurewebsites.net/api/v2/FavoriteGenres/remove/{genreId}", "PUT");
 
+export const changePassword = new Flux.RequestAction<{data:{OldPassword:string, NewPassword: string, ConfirmPassword: string}},any>
+("CHANGE_PASSWORD",  "https://moviebot-rage.azurewebsites.net/api/Account/ChangePassword", "POST");
 
 export var appReducer = new Flux.Reducer<IAppState>([
+    {
+        action: changePassword.request,
+        reduce: (state: IAppState, payload: any) => {
+            payload.options = {};
+            payload.options["Content-Type"] = "application/x-www-form-urlencoded; charset=utf-8";
+            payload.options["Authorization"] = "Bearer " + state.user.token;
+            state.changePasswordError = "";
+
+        }
+    },
+    {
+        action: changePassword.response,
+        reduce: (state: IAppState, payload: any) => {
+           
+
+        }
+    },
+    {
+        action: changePassword.error,
+        reduce: (state: IAppState, payload: any) => {
+           state.changePasswordError = "There was an error when trying to change your password."
+           if( payload.response.body.ModelState.ConfirmPassword)
+            state.changePasswordError +=" " +  payload.response.body.ModelState.ConfirmPassword;
+           if( payload.response.body.ModelState.NewPassword)
+                state.changePasswordError +=" " +  payload.response.body.ModelState.NewPassword;
+                
+
+        }
+    },
     {
         action: loadUserGenres.request,
         reduce: (state: IAppState, payload: any) => {
@@ -185,6 +218,8 @@ export var appReducer = new Flux.Reducer<IAppState>([
         action: goToView,
         reduce: (state: IAppState, payload: { view: PageActive }) => {
             state.active = payload.view;
+            if(state.changePasswordError !=="")
+                state.changePasswordError = "";
         }
     },
     {
